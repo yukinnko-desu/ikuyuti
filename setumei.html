@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ゲーム説明 - ゆっちん育成ゲーム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ゲーム説明画面 -->
+    <div id="explanation-screen" class="screen active">
+      <div class="explanation-content">
+        <h2>ゲーム説明</h2>
+        <p>撫でてあげると​ゆっちんが​育つよ</p>
+        <p>ゆっちんを​撫でるには​画像を​連打してね</p>
+        <button id="play-button" class="next-button">ゲーム開始</button>
+      </div>
+    </div>
+
+    <script>
+      // ゲーム開始ボタン → ゲーム画面へ
+      document.addEventListener('DOMContentLoaded', () => {
+        const playButton = document.getElementById('play-button');
+        
+        if (playButton) {
+          playButton.addEventListener('click', () => {
+            window.location.href = 'main.html';
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
