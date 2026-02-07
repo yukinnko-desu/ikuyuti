@@ -11,10 +11,21 @@
   <body>
     <!-- ホーム画面 -->
     <div id="game-screen" class="screen active">
-      <div class="game-content">
-        <h1>ホーム</h1>
-        <p>ゲーム画面</p>
+      <!-- 連打数表示 -->
+      <div class="tap-counter">
+        <p>連打数: <span id="tap-count">0</span></p>
       </div>
+      
+      <!-- セリフ表示 -->
+      <div class="dialogue-box" id="dialogue-box">
+        <p id="dialogue-text"></p>
+      </div>
+      
+      <img src="images/3years.jpg" alt="" class="years-image" id="years-image">
+      <img src="images/hako.png" alt="" class="hako-image">
+      <div class="game-content">
+      </div>
+      <button class="back-home-button">今日はもう家に帰る</button>
     </div>
 
     <script src="script.js"></script>
