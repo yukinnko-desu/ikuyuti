@@ -21,11 +21,47 @@ const screenManager = {
 document.addEventListener('DOMContentLoaded', () => {
   const startButton = document.getElementById('start-button');
   const playButton = document.getElementById('play-button');
+  const nextButton = document.getElementById('next-button');
+  const storyText = document.getElementById('story');
+  
+  // ストーリーテキスト
+  const storyLines = [
+    '散歩を​していると​道端に​神社が​現れた！？​',
+    '参拝を​してみると​母子手帳と​一緒に​ゆっちんが​空か​落ちてきた​‼',
+    '三歳の​ゆっちんを​保護して​育て​よう！​',
+    'お母さんに​元の​場所に​戻してきなさいっ言われちゃった​...',
+    '段ボールで​育てるしかないみたい'
+  ];
+  
+  let currentStoryIndex = 0;
+  
+  // 進むボタン（ストーリー画面）
+  if (nextButton && storyText) {
+    nextButton.addEventListener('click', () => {
+      if (currentStoryIndex < storyLines.length) {
+        const paragraph = document.createElement('p');
+        paragraph.textContent = storyLines[currentStoryIndex];
+        paragraph.style.marginBottom = '20px';
+        storyText.appendChild(paragraph);
+        currentStoryIndex++;
+      } else {
+        // すべてのストーリーが終わった場合
+        window.location.href = 'title.html';
+      }
+    });
+    
+    // 初期表示はなし
+    currentStoryIndex = 0;
+  }
   
   // 進むボタン → ゲーム説明画面
   if (startButton) {
     startButton.addEventListener('click', () => {
-      screenManager.showScreen('explanation');
+      currentStoryIndex = 0;
+      if (storyLines.length > 0) {
+        storyText.textContent = storyLines[0];
+        currentStoryIndex = 1;
+      }
     });
   }
   
