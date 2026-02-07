@@ -1,60 +1,98 @@
-const storyLines = [
-  "散歩をしていると道端に神社が現れた！？",
-  "参拝をしてみると母子手帳と一緒にゆっちんが空から落ちてきた!!",
-  "三歳のゆっちんを保護して育てよう！",
-  "お母さんに元の場所に戻してきなさいって言われちゃった...",
-  "段ボールで育てるしかないみたい",
-];
-
-const storyContainer = document.getElementById("story");
-const nextButton = document.getElementById("next-button");
-let currentIndex = 0;
-let isTyping = false;
-let storyComplete = false;
-
-const typeLine = (text, onComplete) => {
-  const line = document.createElement("p");
-  storyContainer.appendChild(line);
-
-  let i = 0;
-  const speedMs = 40;
-
-  const timer = setInterval(() => {
-    line.textContent += text[i];
-    i += 1;
-
-    if (i >= text.length) {
-      clearInterval(timer);
-      onComplete();
+// 画面管理システム
+const screenManager = {
+  currentScreen: 'title',
+  
+  showScreen(screenName) {
+    // すべての画面を非表示
+    document.querySelectorAll('.screen').forEach(screen => {
+      screen.classList.remove('active');
+    });
+    
+    // 指定された画面を表示
+    const screenElement = document.getElementById(`${screenName}-screen`);
+    if (screenElement) {
+      screenElement.classList.add('active');
+      this.currentScreen = screenName;
     }
-  }, speedMs);
+  }
 };
 
-const appendNextLine = () => {
-  if (isTyping) {
-    return;
+// ボタンイベントリスナー
+document.addEventListener('DOMContentLoaded', () => {
+  const startButton = document.getElementById('start-button');
+  const playButton = document.getElementById('play-button');
+  
+  // 進むボタン → ゲーム説明画面
+  if (startButton) {
+    startButton.addEventListener('click', () => {
+      screenManager.showScreen('explanation');
+    });
+  }
+  
+  // ゲーム開始ボタン → ゲーム画面へ
+  if (playButton) {
+    playButton.addEventListener('click', () => {
+      screenManager.showScreen('game');
+    });
   }
 
-  if (storyComplete) {
-    window.location.href = "title.html";
-    return;
+  // 連打ゲーム機能（main.htmlのみ）
+  const yearsImage = document.getElementById('years-image');
+  const tapCountDisplay = document.getElementById('tap-count');
+  const dialogueBox = document.getElementById('dialogue-box');
+  const dialogueText = document.getElementById('dialogue-text');
+
+  if (yearsImage) {
+    let tapCount = 0;
+    let dialogueTimeout;
+
+    const dialogues = [
+      '愛が​溢れてますね',
+      '​照れました',
+      'へ​へっ',
+      'ヘェ⤴',
+      'もっと​褒めても​いいんですよ？​',
+      '世界が​憎い',
+      '​私は​愚かです',
+      '​ここは​段ボールですか？​',
+      '​ちょっと​待ってください​',
+      'わたしは​ゆっちんよぉーん'
+    ];
+
+    yearsImage.addEventListener('click', () => {
+      // カウントを増加
+      tapCount++;
+      if (tapCountDisplay) {
+        tapCountDisplay.textContent = tapCount;
+      }
+
+      // 200回に達したら結果画面へ遷移
+      if (tapCount === 200) {
+        window.location.href = 'kekka.html';
+        return;
+      }
+
+      // セリフをランダムに表示
+      if (dialogueText && dialogueBox) {
+        const randomDialogue = dialogues[Math.floor(Math.random() * dialogues.length)];
+        dialogueText.textContent = randomDialogue;
+        dialogueBox.classList.add('show');
+
+        // 既存のタイムアウトをクリア
+        if (dialogueTimeout) {
+          clearTimeout(dialogueTimeout);
+        }
+
+        // 2秒後にセリフを消す
+        dialogueTimeout = setTimeout(() => {
+          dialogueBox.classList.remove('show');
+        }, 2000);
+      }
+    });
+
+    // yearsImageにスタイルを追加（クリック時のアニメーション対応）
+    yearsImage.style.cursor = 'pointer';
+    yearsImage.style.userSelect = 'none';
+    yearsImage.style.transition = 'transform 0.1s';
   }
-
-  isTyping = true;
-  nextButton.disabled = true;
-
-  typeLine(storyLines[currentIndex], () => {
-    currentIndex += 1;
-    isTyping = false;
-    if (currentIndex >= storyLines.length) {
-      storyComplete = true;
-      nextButton.disabled = false;
-      nextButton.textContent = "進む";
-      return;
-    }
-
-    nextButton.disabled = false;
-  });
-};
-
-nextButton.addEventListener("click", appendNextLine);
+});

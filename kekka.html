@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>結果画面 - ゆっちん育成ゲーム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- 結果画面 -->
+    <div id="result-screen" class="screen active">
+      <div class="result-content">
+        <h1>クリア！</h1>
+        <p>200回のタップ、お疲れ様でした！</p>
+        <button id="back-button" class="next-button">タイトルに戻る</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const backButton = document.getElementById('back-button');
+        
+        if (backButton) {
+          backButton.addEventListener('click', () => {
+            window.location.href = 'title.html';
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

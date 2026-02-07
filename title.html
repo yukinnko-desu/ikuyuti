@@ -2,12 +2,33 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>タイトル画面</title>
+    <title>ゆっちん育成ゲーム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body class="title-screen">
-    <main class="title-panel" role="main">
-      <h1>いくゆち</h1>
-    </main>
+  <body>
+    <!-- タイトル画面 -->
+    <div id="title-screen" class="screen active">
+      <img src="images/3years.jpg" alt="" class="title-image">
+      <div class="title-content">
+        <h1>いくゆち</h1>
+        <button id="start-button" class="start-button">スタート！</button>
+      </div>
+    </div>
+
+    <script>
+      // スタートボタン → ゲーム説明画面へ
+      document.addEventListener('DOMContentLoaded', () => {
+        const startButton = document.getElementById('start-button');
+        
+        if (startButton) {
+          startButton.addEventListener('click', () => {
+            window.location.href = 'setumei.html';
+          });
+        }
+      });
+    </script>
   </body>
 </html>
