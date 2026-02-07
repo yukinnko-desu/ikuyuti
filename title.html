@@ -18,24 +18,17 @@
       </div>
     </div>
 
-    <!-- ゲーム説明画面 -->
-    <div id="explanation-screen" class="screen">
-      <div class="explanation-content">
-        <h2>ゲーム説明</h2>
-        <p>撫でてあげると​ゆっちんが​育つよ</p>
-        <p>ゆっちんを​撫でるには​画像を​連打してね</p>
-        <button id="play-button" class="next-button">ゲーム開始</button>
-      </div>
-    </div>
-
-    <!-- ホーム画面 -->
-    <div id="game-screen" class="screen">
-      <div class="game-content">
-        <h1>ホーム</h1>
-        <p>ゲーム画面です</p>
-      </div>
-    </div>
-
-    <script src="script.js"></script>
+    <script>
+      // スタートボタン → ゲーム説明画面へ
+      document.addEventListener('DOMContentLoaded', () => {
+        const startButton = document.getElementById('start-button');
+        
+        if (startButton) {
+          startButton.addEventListener('click', () => {
+            window.location.href = 'setumei.html';
+          });
+        }
+      });
+    </script>
   </body>
 </html>
