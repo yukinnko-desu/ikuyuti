@@ -1,0 +1,101 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: start center;
+  padding: 40px 0;
+  background: #1f1f1f;
+  color: #f2f2f2;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", "MS Mincho", serif;
+}
+
+.title-screen {
+  place-items: center;
+  padding: 0;
+  background: radial-gradient(
+    circle at top,
+    #fff7e8,
+    #f7e9dd 55%,
+    #f2ded1 100%
+  );
+  color: #5a3b2e;
+}
+
+.title-panel {
+  padding: 56px 64px;
+  background: #fff9f2;
+  border-radius: 28px;
+  box-shadow: 0 16px 40px rgba(122, 82, 61, 0.18);
+  border: 2px solid #f0d9c7;
+}
+
+.title-panel h1 {
+  margin: 0;
+  font-size: clamp(48px, 10vw, 120px);
+  letter-spacing: 0.12em;
+  text-shadow: 0 6px 12px rgba(90, 59, 46, 0.18);
+}
+
+.story-panel {
+  width: min(680px, 90vw);
+  padding: 40px 28px 72px;
+  height: min(520px, 85vh);
+  background: #1f1f1f;
+  border-radius: 6px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.story-text {
+  overflow: visible;
+}
+
+.story-text p {
+  margin: 0 0 22px;
+  font-size: 18px;
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+}
+
+.story-text p:last-child {
+  margin-bottom: 0;
+}
+
+.story-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#next-button {
+  appearance: none;
+  border: 1px solid #4a4a4a;
+  background: #2a2a2a;
+  color: #f2f2f2;
+  padding: 8px 18px;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+#next-button:hover {
+  background: #333333;
+  border-color: #5a5a5a;
+  transform: translateY(-1px);
+}
+
+#next-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
