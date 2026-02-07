@@ -35,4 +35,64 @@ document.addEventListener('DOMContentLoaded', () => {
       screenManager.showScreen('game');
     });
   }
+
+  // 連打ゲーム機能（main.htmlのみ）
+  const yearsImage = document.getElementById('years-image');
+  const tapCountDisplay = document.getElementById('tap-count');
+  const dialogueBox = document.getElementById('dialogue-box');
+  const dialogueText = document.getElementById('dialogue-text');
+
+  if (yearsImage) {
+    let tapCount = 0;
+    let dialogueTimeout;
+
+    const dialogues = [
+      '愛が​溢れてますね',
+      '​照れました',
+      'へ​へっ',
+      'ヘェ⤴',
+      'もっと​褒めても​いいんですよ？​',
+      '世界が​憎い',
+      '​私は​愚かです',
+      '​ここは​段ボールですか？​',
+      '​ちょっと​待ってください​',
+      'わたしは​ゆっちんよぉーん'
+    ];
+
+    yearsImage.addEventListener('click', () => {
+      // カウントを増加
+      tapCount++;
+      if (tapCountDisplay) {
+        tapCountDisplay.textContent = tapCount;
+      }
+
+      // 200回に達したら結果画面へ遷移
+      if (tapCount === 200) {
+        window.location.href = 'kekka.html';
+        return;
+      }
+
+      // セリフをランダムに表示
+      if (dialogueText && dialogueBox) {
+        const randomDialogue = dialogues[Math.floor(Math.random() * dialogues.length)];
+        dialogueText.textContent = randomDialogue;
+        dialogueBox.classList.add('show');
+
+        // 既存のタイムアウトをクリア
+        if (dialogueTimeout) {
+          clearTimeout(dialogueTimeout);
+        }
+
+        // 2秒後にセリフを消す
+        dialogueTimeout = setTimeout(() => {
+          dialogueBox.classList.remove('show');
+        }, 2000);
+      }
+    });
+
+    // yearsImageにスタイルを追加（クリック時のアニメーション対応）
+    yearsImage.style.cursor = 'pointer';
+    yearsImage.style.userSelect = 'none';
+    yearsImage.style.transition = 'transform 0.1s';
+  }
 });
