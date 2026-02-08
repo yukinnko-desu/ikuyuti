@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap");
+
 * {
   margin: 0;
   padding: 0;
@@ -9,7 +11,7 @@ body {
   height: 100vh;
   overflow: hidden;
   font-family: Arial, sans-serif;
-  background-color: black;
+  background-color: #121212;
 }
 
 .screen {
@@ -29,7 +31,7 @@ body {
 
 /* タイトル画面 */
 #title-screen {
-  background-image: url('images/kusamura.png');
+  background-image: url("images/kusamura.png");
   background-size: cover;
   background-position: center;
   position: relative;
@@ -63,7 +65,7 @@ body {
   color: white;
   font-size: 3em;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  font-family: 'Zen Kurenaido', serif;
+  font-family: "Zen Kurenaido", serif;
   background-color: rgba(255, 255, 100, 0.6);
   padding: 20px 40px;
   border-radius: 15px;
@@ -150,7 +152,7 @@ body {
 /* ゲーム画面 */
 #game-screen {
   background-color: #e8f5e9;
-  background-image: url('images/kusamura.png');
+  background-image: url("images/kusamura.png");
   background-size: cover;
   background-position: center;
   position: relative;
@@ -248,7 +250,7 @@ body {
 }
 
 .dialogue-box::before {
-  content: '';
+  content: "";
   position: absolute;
   left: -10px;
   top: 15px;
@@ -260,7 +262,7 @@ body {
 }
 
 .dialogue-box::after {
-  content: '';
+  content: "";
   position: absolute;
   left: -14px;
   top: 13px;
@@ -303,7 +305,7 @@ body {
   font-size: 3.5em;
   color: #667eea;
   margin-bottom: 20px;
-  font-family: 'Zen Kurenaido', serif;
+  font-family: "Zen Kurenaido", serif;
 }
 
 .result-content p {
@@ -320,21 +322,25 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 40px;
+  padding: 40px 40px 40px 240px;
 }
 
 .story-text {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
   color: white;
   font-size: 1.2em;
-  text-align: center;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", "Noto Serif JP", serif;
+  font-weight: 500;
+  text-align: left;
   margin-bottom: 40px;
-  line-height: 1.6;
+  line-height: 1.8;
+  letter-spacing: 0.04em;
   overflow-y: auto;
+  padding-top: 65px;
 }
 
 .story-actions {
@@ -346,12 +352,16 @@ body {
 #next-button {
   padding: 12px 30px;
   font-size: 1.1em;
-  background-color: black;
+  background-color: #121212;
   color: white;
   border: 2px solid white;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-right: 100px;
+  margin-top: 0;
+  position: relative;
+  top: -60px;
 }
 
 #next-button:hover {
