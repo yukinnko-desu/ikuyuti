@@ -77,6 +77,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const tapCountDisplay = document.getElementById("tap-count");
   const dialogueBox = document.getElementById("dialogue-box");
   const dialogueText = document.getElementById("dialogue-text");
+  const backHomeButton = document.querySelector(".back-home-button");
+  const exitModal = document.getElementById("exit-modal");
+  const exitResultModal = document.getElementById("exit-result-modal");
+  const exitSecondModal = document.getElementById("exit-second-modal");
 
   if (yearsImage) {
     let tapCount = 0;
@@ -131,5 +135,67 @@ document.addEventListener("DOMContentLoaded", () => {
     yearsImage.style.cursor = "pointer";
     yearsImage.style.userSelect = "none";
     yearsImage.style.transition = "transform 0.1s";
+  }
+
+  if (backHomeButton && exitModal) {
+    const closeExitModal = () => {
+      exitModal.setAttribute("hidden", "");
+    };
+
+    const closeExitResultModal = () => {
+      if (exitResultModal) {
+        exitResultModal.setAttribute("hidden", "");
+      }
+    };
+
+    const closeExitSecondModal = () => {
+      if (exitSecondModal) {
+        exitSecondModal.setAttribute("hidden", "");
+      }
+    };
+
+    backHomeButton.addEventListener("click", () => {
+      exitModal.removeAttribute("hidden");
+    });
+
+    exitModal.addEventListener("click", (event) => {
+      if (event.target === exitModal) {
+        closeExitModal();
+      }
+    });
+
+    exitModal.querySelectorAll("[data-exit]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const action = button.getAttribute("data-exit");
+        if (action === "yes") {
+          closeExitModal();
+          if (exitResultModal) {
+            exitResultModal.removeAttribute("hidden");
+          }
+          return;
+        }
+        closeExitModal();
+      });
+    });
+
+    if (exitResultModal) {
+      exitResultModal.addEventListener("click", () => {
+        closeExitResultModal();
+        if (exitSecondModal) {
+          exitSecondModal.removeAttribute("hidden");
+        } else {
+          window.location.href = "title.html";
+        }
+      });
+    }
+
+    if (exitSecondModal) {
+      exitSecondModal.addEventListener("click", (event) => {
+        if (event.target === exitSecondModal) {
+          closeExitSecondModal();
+          window.location.href = "title.html";
+        }
+      });
+    }
   }
 });

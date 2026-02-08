@@ -220,6 +220,77 @@ body {
   transform: translateX(-50%) scale(0.95);
 }
 
+/* 退出確認モーダル */
+.exit-modal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.35);
+  z-index: 6;
+}
+
+.exit-modal[hidden] {
+  display: none;
+}
+
+.exit-modal__card {
+  background-color: #ffffff;
+  border: 2px solid #111;
+  border-radius: 6px;
+  padding: 20px 24px 24px;
+  width: min(720px, 88vw);
+  text-align: center;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+}
+
+.exit-modal__card--message {
+  padding: 24px 32px;
+}
+
+.exit-modal__title,
+.exit-modal__subtitle {
+  margin: 0;
+  color: #111;
+  line-height: 1.6;
+}
+
+.exit-modal__title {
+  font-size: 1.2em;
+  margin-bottom: 6px;
+}
+
+.exit-modal__subtitle {
+  font-size: 1.2em;
+  margin-bottom: 16px;
+}
+
+.exit-modal__actions {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 24px;
+  font-size: 1.1em;
+}
+
+.exit-modal__button {
+  background: none;
+  border: none;
+  color: #111;
+  font-size: 1.1em;
+  cursor: pointer;
+  padding: 6px 18px;
+}
+
+.exit-modal__button--center {
+  display: block;
+  margin: 12px auto 0;
+}
+
+.exit-modal__button:hover {
+  text-decoration: underline;
+}
+
 /* 連打計数 */
 .tap-counter {
   position: absolute;
