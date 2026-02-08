@@ -97,6 +97,9 @@ body {
 
 /* ゲーム説明画面 */
 #explanation-screen {
+  background-image: url("images/kusamura.png");
+  background-size: cover;
+  background-position: center;
   background-color: white;
 }
 
@@ -112,7 +115,7 @@ body {
 }
 
 .explanation-content h2 {
-  font-size: 3em;
+  font-size: 3.3em;
   color: black;
   position: absolute;
   top: -80px;
@@ -120,6 +123,19 @@ body {
   transform: translateX(-50%);
   margin: 0;
   white-space: nowrap;
+  text-shadow:
+    2px 0 0 #fff,
+    -2px 0 0 #fff,
+    0 2px 0 #fff,
+    0 -2px 0 #fff,
+    2px 2px 0 #fff,
+    -2px 2px 0 #fff,
+    2px -2px 0 #fff,
+    -2px -2px 0 #fff,
+    3px 0 0 #fff,
+    -3px 0 0 #fff,
+    0 3px 0 #fff,
+    0 -3px 0 #fff;
 }
 
 .explanation-content p {
