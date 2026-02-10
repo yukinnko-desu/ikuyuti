@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ゆっちん育成ゲーム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- ホーム画面 -->
+    <div id="game-screen" class="screen active">
+      <!-- 連打数表示 -->
+      <div class="tap-counter">
+        <p>連打数: <span id="tap-count">0</span></p>
+      </div>
+
+      <!-- セリフ表示 -->
+      <div class="dialogue-box" id="dialogue-box">
+        <p id="dialogue-text"></p>
+      </div>
+
+      <img
+        src="images/3years.jpg"
+        alt=""
+        class="years-image"
+        id="years-image"
+      />
+      <img src="images/hako.png" alt="" class="hako-image" />
+      <div class="game-content"></div>
+      <button class="back-home-button">今日はもう家に帰る</button>
+
+      <div id="exit-modal" class="exit-modal" hidden>
+        <div
+          class="exit-modal__card"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="exit-title"
+        >
+          <p id="exit-title" class="exit-modal__title">
+            ゆっちんが悲しそうに見つめてきます。
+          </p>
+          <p class="exit-modal__subtitle">本当に辞めますか？（ゲーム終了）</p>
+          <div class="exit-modal__actions">
+            <button type="button" class="exit-modal__button" data-exit="yes">
+              はい
+            </button>
+            <button type="button" class="exit-modal__button" data-exit="no">
+              いいえ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="exit-result-modal" class="exit-modal" hidden>
+        <div
+          class="exit-modal__card exit-modal__card--message"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="exit-result"
+        >
+          <p id="exit-result" class="exit-modal__title">
+            あなたはそっと段ボールのふたを閉めた
+          </p>
+        </div>
+      </div>
+
+      <div id="exit-second-modal" class="exit-modal" hidden>
+        <div
+          class="exit-modal__card exit-modal__card--message"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="exit-second"
+        >
+          <p id="exit-second" class="exit-modal__title">
+            帰ろうとした途端、段ボールが急に震えだした
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div id="evolution-screen" class="screen">
+      <div class="tap-counter evolution-counter">
+        <p>連打数: <span id="evolution-tap-count">0</span></p>
+      </div>
+      <h1 class="evolution-title">エンジェルゆっちんに進化</h1>
+      <img
+        src="images/angel.png"
+        alt="エンジェルゆっちん"
+        class="years-image evolution-image"
+      />
+      <img src="images/hako.png" alt="" class="hako-image" />
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

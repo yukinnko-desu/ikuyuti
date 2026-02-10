@@ -174,6 +174,46 @@ body {
   position: relative;
 }
 
+#evolution-screen {
+  background-color: #e8f5e9;
+  background-image: url("images/kusamura.png");
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  font-family: "Zen Kurenaido", serif;
+}
+
+.evolution-title {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #0c2f4a;
+  font-size: clamp(1.8em, 3.2vw, 2.6em);
+  letter-spacing: 0.08em;
+  text-shadow:
+    2px 0 0 #fff,
+    -2px 0 0 #fff,
+    0 2px 0 #fff,
+    0 -2px 0 #fff,
+    2px 2px 0 #fff,
+    -2px 2px 0 #fff,
+    2px -2px 0 #fff,
+    -2px -2px 0 #fff;
+  margin: 0;
+  z-index: 4;
+}
+
+.evolution-counter {
+  z-index: 4;
+  font-family: Arial, sans-serif;
+}
+
+.evolution-image {
+  max-width: 65%;
+  max-height: 65%;
+}
+
 .hako-image {
   position: absolute;
   top: 80%;
@@ -297,20 +337,25 @@ body {
   top: 20px;
   left: 20px;
   z-index: 10;
-  background-color: rgba(255, 255, 255, 0.9);
-  padding: 15px 25px;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  padding: 18px 26px;
+  border-radius: 16px;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
 }
 
 .tap-counter p {
-  font-size: 1.5em;
-  color: #333;
+  font-size: 1.4em;
+  color: #2a2a2a;
   margin: 0;
   font-weight: bold;
 }
 
 #tap-count {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+#evolution-tap-count {
   color: #ff6b6b;
   font-weight: bold;
 }
@@ -360,6 +405,28 @@ body {
   border-right: 12px solid #333;
 }
 
+.dialogue-box--event {
+  top: 50%;
+  left: 50%;
+  right: auto;
+  transform: translate(-50%, -50%);
+  width: min(720px, 86vw);
+  height: auto;
+  padding: 22px 28px;
+  border-radius: 6px;
+  background-color: #ffffff;
+  text-align: center;
+}
+
+.dialogue-box--event::before,
+.dialogue-box--event::after {
+  display: none;
+}
+
+.dialogue-box--event #dialogue-text {
+  font-size: 1.1em;
+}
+
 .dialogue-box.show {
   opacity: 1;
 }
@@ -373,33 +440,103 @@ body {
 
 /* 結果画面 */
 #result-screen {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #f7f2e8;
+  background-image: radial-gradient(#ece3d3 1px, transparent 1px);
+  background-size: 24px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.result-content {
-  text-align: center;
-  background-color: white;
-  padding: 60px 40px;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  max-width: 500px;
-}
-
-.result-content h1 {
-  font-size: 3.5em;
-  color: #667eea;
-  margin-bottom: 20px;
   font-family: "Zen Kurenaido", serif;
 }
 
-.result-content p {
-  font-size: 1.3em;
-  color: #666;
-  margin-bottom: 40px;
-  line-height: 1.6;
+.result-panel {
+  width: min(1000px, 92vw);
+  height: min(560px, 86vh);
+  background-color: #fffaf2;
+  border: 3px solid #2a2a2a;
+  box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.15);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 48px;
+}
+
+.result-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  color: #222;
+}
+
+.result-title {
+  font-size: 3.2em;
+  margin: 0;
+  letter-spacing: 0.08em;
+}
+
+.result-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  font-size: 1.4em;
+}
+
+.result-lines p {
+  margin: 0;
+}
+
+.result-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  border: 3px solid #2a2a2a;
+  padding: 12px;
+}
+
+.result-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.result-button {
+  align-self: flex-start;
+  padding: 14px 48px;
+  border-radius: 999px;
+  border: 3px solid #2a2a2a;
+  background-color: #fff;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.result-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
+}
+
+.result-button:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .result-panel {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+
+  .result-photo {
+    height: 260px;
+  }
+
+  .result-button {
+    align-self: center;
+  }
 }
 
 /* ストーリー画面 */

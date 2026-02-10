@@ -3,28 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <title>結果画面 - ゆっちん育成ゲーム</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <!-- 結果画面 -->
     <div id="result-screen" class="screen active">
-      <div class="result-content">
-        <h1>クリア！</h1>
-        <p>200回のタップ、お疲れ様でした！</p>
-        <button id="back-button" class="next-button">タイトルに戻る</button>
+      <div class="result-panel">
+        <div class="result-info">
+          <h1 class="result-title">結果</h1>
+          <div class="result-lines">
+            <p>性格: <span id="personality">努力家ゆっちん</span></p>
+            <p>総打数: <span id="total-taps">0</span>回</p>
+            <p>連打速度: <span id="tap-speed">0.00</span>回/秒</p>
+          </div>
+          <button id="back-button" class="result-button">終了</button>
+        </div>
+        <div class="result-photo">
+          <img id="result-photo" src="images/3years.jpg" alt="ゆっちん" />
+        </div>
       </div>
     </div>
 
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const backButton = document.getElementById('back-button');
-        
+      document.addEventListener("DOMContentLoaded", () => {
+        const backButton = document.getElementById("back-button");
+        const totalTaps = document.getElementById("total-taps");
+        const tapSpeed = document.getElementById("tap-speed");
+        const personality = document.getElementById("personality");
+        const resultPhoto = document.getElementById("result-photo");
+
+        const savedCount = localStorage.getItem("yuttinTapCount");
+        const savedSpeed = localStorage.getItem("yuttinTapSpeed");
+
+        if (totalTaps) {
+          totalTaps.textContent = savedCount ? savedCount : "0";
+        }
+
+        const speedValue = savedSpeed ? parseFloat(savedSpeed) : 0;
+
+        if (tapSpeed) {
+          tapSpeed.textContent = savedSpeed ? savedSpeed : "0.00";
+        }
+
+        if (personality) {
+          if (speedValue >= 5) {
+            personality.textContent = "努力家ゆっちん";
+          } else if (speedValue <= 2) {
+            personality.textContent = "マイペースゆっちん";
+          } else {
+            personality.textContent = "普通のゆっちん";
+          }
+        }
+
+        if (resultPhoto) {
+          resultPhoto.style.cursor = "pointer";
+          if (speedValue >= 5) {
+            resultPhoto.src = "images/normal.png";
+          } else if (speedValue <= 2) {
+            resultPhoto.src = "images/eggyuti.png";
+          } else {
+            resultPhoto.src = "images/yabacchin.jpg";
+          }
+
+          localStorage.setItem("yuttinResultPhoto", resultPhoto.src);
+
+          resultPhoto.addEventListener("click", () => {
+            window.location.href = "uramain.html";
+          });
+        }
+
         if (backButton) {
-          backButton.addEventListener('click', () => {
-            window.location.href = 'title.html';
+          backButton.addEventListener("click", () => {
+            window.location.href = "title.html";
           });
         }
       });
