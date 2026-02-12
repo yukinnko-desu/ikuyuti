@@ -162,6 +162,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (evolutionScreenShown) {
         return;
       }
+      // uramainで100回に達している場合はクリックを無効化
+      if (isUramain && tapCount >= 100) {
+        return;
+      }
       // カウントを増加
       tapCount++;
       if (!firstTapAt) {
