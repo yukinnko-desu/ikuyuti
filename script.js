@@ -138,6 +138,12 @@ document.addEventListener("DOMContentLoaded", () => {
         evolutionTapCount.textContent = String(tapCount);
       }
 
+      // tenshi_se.mp3を再生
+      const tenshiSound = new Audio("sounds/tenshi_se.mp3");
+      tenshiSound.play().catch((error) => {
+        console.log("音声の再生に失敗:", error);
+      });
+
       if (isUramain) {
         setTimeout(() => {
           window.location.href = "rasuto.html";
