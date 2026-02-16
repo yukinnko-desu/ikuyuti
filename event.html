@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>イベント - ゆっちん育成ゲーム</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kurenaido&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .event-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        padding: 20px;
+        text-align: center;
+        background-image: url("images/kusamura.png");
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        font-family: "Zen Kurenaido", serif;
+      }
+
+      .event-message {
+        font-size: 24px;
+        line-height: 1.6;
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 10;
+        color: black;
+        font-family: "Zen Kurenaido", sans-serif;
+      }
+
+      .event-message--happy {
+        font-size: 32px;
+        font-weight: 700;
+      }
+
+      .hako-image {
+        position: absolute;
+        top: 80%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 300%;
+        max-height: 100%;
+        object-fit: contain;
+        z-index: 2;
+      }
+
+      .event-image {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 55%;
+        max-height: 55%;
+        object-fit: contain;
+        z-index: 3;
+      }
+
+      .speech-bubble {
+        position: absolute;
+        top: 28%;
+        left: 65%;
+        transform: translateY(-50%);
+        max-width: 280px;
+        padding: 12px 16px;
+        background-color: white;
+        color: black;
+        border: 2px solid black;
+        border-radius: 16px;
+        font-size: 20px;
+        font-weight: 600;
+        z-index: 4;
+      }
+
+      .speech-bubble::before {
+        content: "";
+        position: absolute;
+        left: -18px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 10px 18px 10px 0;
+        border-style: solid;
+        border-color: transparent black transparent transparent;
+      }
+
+      .speech-bubble::after {
+        content: "";
+        position: absolute;
+        left: -14px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 8px 14px 8px 0;
+        border-style: solid;
+        border-color: transparent white transparent transparent;
+      }
+
+      .button-container {
+        display: flex;
+        gap: 20px;
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+      }
+
+      .choice-button {
+        padding: 15px 30px;
+        font-size: 18px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "Zen Kurenaido", sans-serif;
+        transition: transform 0.2s;
+      }
+
+      .choice-button:hover {
+        transform: scale(1.05);
+      }
+
+      .give-button {
+        background-color: #4caf50;
+      }
+
+      .give-button:hover {
+        background-color: #45a049;
+      }
+
+      .no-give-button {
+        background-color: #f44336;
+      }
+
+      .no-give-button:hover {
+        background-color: #da190b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="event-screen">
+      <div class="event-message" id="event-message"></div>
+      <img src="images/hako.png" alt="" class="hako-image" />
+      <img
+        src="images/kuuhu.jpg"
+        alt="ゆっちん"
+        class="event-image"
+        id="event-image"
+      />
+      <div class="speech-bubble" id="speech-bubble">
+        ご飯を食べたいと思いませんか
+      </div>
+      <div class="button-container">
+        <button class="choice-button give-button" id="give-button">
+          あげる
+        </button>
+        <button class="choice-button no-give-button" id="no-give-button">
+          あげない
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // 要素の取得
+      const messageElement = document.getElementById("event-message");
+      const giveButton = document.getElementById("give-button");
+      const noGiveButton = document.getElementById("no-give-button");
+      const eventImage = document.getElementById("event-image");
+      const speechBubble = document.getElementById("speech-bubble");
+
+      // メッセージを固定
+      messageElement.textContent = "おなかがすいたみたい";
+
+      // 「あげない」ボタン - main.htmlに戻る
+      noGiveButton.addEventListener("click", () => {
+        localStorage.removeItem("yuttinEventTapCount");
+        window.location.href = "main.html";
+      });
+
+      // 「あげる」ボタン - 画像をyorokobi.jpgに変更
+      giveButton.addEventListener("click", () => {
+        eventImage.src = "images/yorokobi.jpg";
+        messageElement.textContent = "ゆっちんがうれしそう";
+        messageElement.classList.add("event-message--happy");
+        if (speechBubble) {
+          speechBubble.style.display = "none";
+        }
+        
+        // ボタンを非表示
+        const buttonContainer = document.querySelector(".button-container");
+        buttonContainer.style.display = "none";
+        
+        // 画像をクリック可能にして、クリックでmain.htmlに戻る
+        eventImage.style.cursor = "pointer";
+        eventImage.addEventListener("click", () => {
+          localStorage.removeItem("yuttinEventTapCount");
+          window.location.href = "main.html";
+        });
+      });
+    </script>
+  </body>
+</html>
