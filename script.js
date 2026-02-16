@@ -113,12 +113,16 @@ document.addEventListener("DOMContentLoaded", () => {
   let firstTapAt = null;
   let evolutionScreenShown = false;
 
-  // イベント画面から戻った場合、クリック数を復元
+  // イベント画面から戻った場合、クリック数と計測開始時刻を復元
   const tapCountBackup = localStorage.getItem("yuttinTapCountBackup");
+  const firstTapAtBackup = localStorage.getItem("yuttinFirstTapAtBackup");
   if (tapCountBackup) {
     tapCount = parseInt(tapCountBackup, 10);
     localStorage.removeItem("yuttinTapCountBackup");
-    firstTapAt = Date.now(); // タイマーを再開
+  }
+  if (firstTapAtBackup && isMain) {
+    firstTapAt = parseInt(firstTapAtBackup, 10);
+    localStorage.removeItem("yuttinFirstTapAtBackup");
   }
 
   // 画面読み込み時にtapCountを表示に反映
@@ -144,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const isUramain = window.location.pathname.endsWith("uramain.html");
-  const isMain = window.location.pathname.endsWith("main.html");
+  const isMain = window.location.pathname.endsWith("main.html") && !isUramain;
   const boxSound = isMain || isUramain ? new Audio("sounds/box.mp3") : null;
 
   if (yearsImage) {
@@ -200,7 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       // カウントを増加
       tapCount++;
-      if (!firstTapAt) {
+      // main.htmlでのみ速度計測のためfirstTapAtを記録
+      if (isMain && !firstTapAt) {
         firstTapAt = Date.now();
       }
       if (tapCountDisplay) {
@@ -211,6 +216,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isMain && (tapCount === 50 || tapCount === 150)) {
         localStorage.setItem("yuttinEventTapCount", String(tapCount));
         localStorage.setItem("yuttinTapCountBackup", String(tapCount));
+        if (firstTapAt) {
+          localStorage.setItem("yuttinFirstTapAtBackup", String(firstTapAt));
+        }
         window.location.href = "event.html";
         return;
       }
