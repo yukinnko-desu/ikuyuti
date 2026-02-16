@@ -113,16 +113,27 @@ document.addEventListener("DOMContentLoaded", () => {
   let firstTapAt = null;
   let evolutionScreenShown = false;
 
-  // イベント画面から戻った場合、クリック数と計測開始時刻を復元
-  const tapCountBackup = localStorage.getItem("yuttinTapCountBackup");
-  const firstTapAtBackup = localStorage.getItem("yuttinFirstTapAtBackup");
-  if (tapCountBackup) {
-    tapCount = parseInt(tapCountBackup, 10);
-    localStorage.removeItem("yuttinTapCountBackup");
-  }
-  if (firstTapAtBackup && isMain) {
-    firstTapAt = parseInt(firstTapAtBackup, 10);
-    localStorage.removeItem("yuttinFirstTapAtBackup");
+  const isUramain = window.location.pathname.endsWith("uramain.html");
+  const isMain = window.location.pathname.endsWith("main.html") && !isUramain;
+  const boxSound = isMain || isUramain ? new Audio("sounds/box.mp3") : null;
+
+  // event.htmlから戻ってきた場合の処理
+  if (isMain) {
+    const tapCountBackup = localStorage.getItem("yuttinTapCountBackup");
+    if (tapCountBackup) {
+      tapCount = parseInt(tapCountBackup, 10);
+      localStorage.removeItem("yuttinTapCountBackup");
+      if (tapCountDisplay) {
+        tapCountDisplay.textContent = String(tapCount);
+      }
+
+      // firstTapAtの復元
+      const firstTapAtBackup = localStorage.getItem("yuttinFirstTapAtBackup");
+      if (firstTapAtBackup) {
+        firstTapAt = parseInt(firstTapAtBackup, 10);
+        localStorage.removeItem("yuttinFirstTapAtBackup");
+      }
+    }
   }
 
   // 画面読み込み時にtapCountを表示に反映
@@ -146,10 +157,6 @@ document.addEventListener("DOMContentLoaded", () => {
       yearsImage.src = savedPhoto;
     }
   }
-
-  const isUramain = window.location.pathname.endsWith("uramain.html");
-  const isMain = window.location.pathname.endsWith("main.html") && !isUramain;
-  const boxSound = isMain || isUramain ? new Audio("sounds/box.mp3") : null;
 
   if (yearsImage) {
     let dialogueTimeout;
@@ -193,6 +200,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "​ちょっと​待ってください​",
       "わたしは​ゆっちんよぉーん",
     ];
+
+    // 画像をクリック可能にする
+    yearsImage.style.cursor = "pointer";
+    yearsImage.style.userSelect = "none";
 
     yearsImage.addEventListener("click", () => {
       if (evolutionScreenShown) {
@@ -279,11 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2000);
       }
     });
-
-    // yearsImageにスタイルを追加（クリック時のアニメーション対応）
-    yearsImage.style.cursor = "pointer";
-    yearsImage.style.userSelect = "none";
-    yearsImage.style.transition = "transform 0.1s";
   }
 
   if (backHomeButton && exitModal) {
