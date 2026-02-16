@@ -113,6 +113,19 @@ document.addEventListener("DOMContentLoaded", () => {
   let firstTapAt = null;
   let evolutionScreenShown = false;
 
+  // イベント画面から戻った場合、クリック数を復元
+  const tapCountBackup = localStorage.getItem("yuttinTapCountBackup");
+  if (tapCountBackup) {
+    tapCount = parseInt(tapCountBackup, 10);
+    localStorage.removeItem("yuttinTapCountBackup");
+    firstTapAt = Date.now(); // タイマーを再開
+  }
+
+  // 画面読み込み時にtapCountを表示に反映
+  if (tapCountDisplay) {
+    tapCountDisplay.textContent = tapCount;
+  }
+
   const persistResult = () => {
     const now = Date.now();
     const durationSec =
@@ -192,6 +205,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       if (tapCountDisplay) {
         tapCountDisplay.textContent = tapCount;
+      }
+
+      // main.htmlで50回または150回の時にイベント画面へ
+      if (isMain && (tapCount === 50 || tapCount === 150)) {
+        localStorage.setItem("yuttinEventTapCount", String(tapCount));
+        localStorage.setItem("yuttinTapCountBackup", String(tapCount));
+        window.location.href = "event.html";
+        return;
       }
 
       if (isUramain && tapCount === 100 && !evolutionShown) {
