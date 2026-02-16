@@ -43,15 +43,26 @@ document.addEventListener("DOMContentLoaded", () => {
       ];
 
   let currentStoryIndex = 0;
+  const heheSound = isRasuto ? new Audio("sounds/hehe_T01.wav") : null;
+  if (heheSound) {
+    heheSound.volume = 1.0;
+  }
 
   // 進むボタン（ストーリー画面）
   if (nextButton && storyText) {
     nextButton.addEventListener("click", () => {
       if (currentStoryIndex < storyLines.length) {
+        const currentLine = storyLines[currentStoryIndex];
         const paragraph = document.createElement("p");
-        paragraph.textContent = storyLines[currentStoryIndex];
+        paragraph.textContent = currentLine;
         paragraph.style.marginBottom = "28px";
         storyText.appendChild(paragraph);
+        if (heheSound && currentLine.includes("へへ")) {
+          heheSound.currentTime = 0;
+          heheSound.play().catch((error) => {
+            console.log("音声の再生に失敗:", error);
+          });
+        }
         currentStoryIndex++;
 
         if (isRasuto && currentStoryIndex === storyLines.length) {
@@ -120,6 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const isUramain = window.location.pathname.endsWith("uramain.html");
+  const isMain = window.location.pathname.endsWith("main.html");
+  const boxSound = isMain || isUramain ? new Audio("sounds/box.mp3") : null;
 
   if (yearsImage) {
     let dialogueTimeout;
@@ -185,6 +198,12 @@ document.addEventListener("DOMContentLoaded", () => {
         evolutionShown = true;
         if (dialogueText && dialogueBox) {
           dialogueText.textContent = "ゆっちんが急に震えだした";
+          if (boxSound) {
+            boxSound.currentTime = 0;
+            boxSound.play().catch((error) => {
+              console.log("音声の再生に失敗:", error);
+            });
+          }
           dialogueBox.classList.add("dialogue-box--event");
           dialogueBox.classList.add("show");
 
@@ -239,6 +258,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (backHomeButton && exitModal) {
+    let exitSequenceTimeout;
+    let exitSecondTimeout;
     const closeExitModal = () => {
       exitModal.setAttribute("hidden", "");
     };
@@ -253,6 +274,26 @@ document.addEventListener("DOMContentLoaded", () => {
       if (exitSecondModal) {
         exitSecondModal.setAttribute("hidden", "");
       }
+    };
+
+    const scheduleExitSecondModal = () => {
+      if (exitSequenceTimeout) {
+        clearTimeout(exitSequenceTimeout);
+      }
+      exitSequenceTimeout = setTimeout(() => {
+        closeExitResultModal();
+        if (exitSecondModal) {
+          exitSecondModal.removeAttribute("hidden");
+          if (boxSound) {
+            boxSound.currentTime = 0;
+            boxSound.play().catch((error) => {
+              console.log("音声の再生に失敗:", error);
+            });
+          }
+        } else {
+          window.location.href = "kekka.html";
+        }
+      }, 2500);
     };
 
     backHomeButton.addEventListener("click", () => {
@@ -277,6 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
           persistResult();
           if (exitResultModal) {
             exitResultModal.removeAttribute("hidden");
+            scheduleExitSecondModal();
           }
           return;
         }
@@ -286,9 +328,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (exitResultModal) {
       exitResultModal.addEventListener("click", () => {
+        if (exitSequenceTimeout) {
+          clearTimeout(exitSequenceTimeout);
+        }
         closeExitResultModal();
         if (exitSecondModal) {
           exitSecondModal.removeAttribute("hidden");
+          if (boxSound) {
+            boxSound.currentTime = 0;
+            boxSound.play().catch((error) => {
+              console.log("音声の再生に失敗:", error);
+            });
+          }
         } else {
           window.location.href = "kekka.html";
         }
@@ -296,11 +347,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (exitSecondModal) {
+      const scheduleExitSecondRedirect = () => {
+        if (exitSecondTimeout) {
+          clearTimeout(exitSecondTimeout);
+        }
+        exitSecondTimeout = setTimeout(() => {
+          closeExitSecondModal();
+          window.location.href = "kekka.html";
+        }, 2500);
+      };
+
       exitSecondModal.addEventListener("click", (event) => {
         if (event.target === exitSecondModal) {
+          if (exitSecondTimeout) {
+            clearTimeout(exitSecondTimeout);
+          }
           closeExitSecondModal();
           window.location.href = "kekka.html";
         }
+      });
+
+      exitSecondModal.addEventListener("transitionend", (event) => {
+        if (
+          event.target === exitSecondModal &&
+          !exitSecondModal.hasAttribute("hidden")
+        ) {
+          scheduleExitSecondRedirect();
+        }
+      });
+
+      const observer = new MutationObserver(() => {
+        if (exitSecondModal.hasAttribute("hidden")) {
+          if (exitSecondTimeout) {
+            clearTimeout(exitSecondTimeout);
+          }
+        } else {
+          scheduleExitSecondRedirect();
+        }
+      });
+      observer.observe(exitSecondModal, {
+        attributes: true,
+        attributeFilter: ["hidden"],
       });
     }
   }
