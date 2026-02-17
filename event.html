@@ -172,6 +172,88 @@
         margin: 0;
         line-height: 1.6;
       }
+
+      .happy-speech-bubble {
+        position: absolute;
+        top: 32%;
+        left: 65%;
+        transform: translateY(-50%);
+        width: 300px;
+        padding: 16px 20px;
+        background-color: white;
+        color: black;
+        border: 3px solid black;
+        border-radius: 20px;
+        font-size: 24px;
+        font-weight: 600;
+        white-space: nowrap;
+        z-index: 5;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .happy-speech-bubble::before {
+        content: "";
+        position: absolute;
+        left: -20px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 12px 20px 12px 0;
+        border-style: solid;
+        border-color: transparent black transparent transparent;
+      }
+
+      .happy-speech-bubble::after {
+        content: "";
+        position: absolute;
+        left: -14px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 8px 14px 8px 0;
+        border-style: solid;
+        border-color: transparent white transparent transparent;
+      }
+
+      @keyframes happySway {
+        0% {
+          transform: translate(-50%, -50%) rotateZ(0deg) scale(1);
+          filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+        }
+        25% {
+          transform: translate(-50%, -50%) rotateZ(12deg) scale(1.05);
+          filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+        50% {
+          transform: translate(-50%, -50%) rotateZ(-12deg) scale(1.05);
+          filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+        75% {
+          transform: translate(-50%, -50%) rotateZ(12deg) scale(1.05);
+          filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+        }
+        100% {
+          transform: translate(-50%, -50%) rotateZ(0deg) scale(1);
+          filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+        }
+      }
+
+      .event-image.happy {
+        animation: happySway 1s ease-in-out infinite;
+      }
+
+      @keyframes bubblePop {
+        0% {
+          opacity: 0;
+          transform: translateY(-50%) scale(0.6);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(-50%) scale(1);
+        }
+      }
+
+      .happy-speech-bubble.animated {
+        animation: bubblePop 0.5s ease-out;
+      }
     </style>
   </head>
   <body>
@@ -231,15 +313,24 @@
       // 「あげる」ボタン - 画像をyorokobi.jpgに変更
       giveButton.addEventListener("click", () => {
         eventImage.src = "images/yorokobi.jpg";
-        
+        // 画像にアニメーションクラスを追加
+        eventImage.classList.add("happy");
+
         // ボタンを非表示
         const buttonContainer = document.querySelector(".button-container");
         buttonContainer.style.display = "none";
-        
+
         // スピーチバブルを非表示
         if (speechBubble) {
           speechBubble.style.display = "none";
         }
+
+        // 喜びの舞の吹き出しを作成・表示
+        const happySpeechBubble = document.createElement("div");
+        happySpeechBubble.className = "happy-speech-bubble animated";
+        happySpeechBubble.textContent = "喜びの舞";
+        const eventScreen = document.querySelector(".event-screen");
+        eventScreen.appendChild(happySpeechBubble);
 
         // 「ゆっちんがうれしそう」モーダルを作成・表示
         const happyModal = document.createElement("div");
@@ -254,14 +345,16 @@
         // 2秒後にモーダルを消す
         setTimeout(() => {
           happyModal.style.display = "none";
-        }, 2000);
+        }, 2500);
 
-        // 画像をクリック可能にして、クリックでmain.htmlに戻る
-        eventImage.style.cursor = "pointer";
-        eventImage.addEventListener("click", () => {
-          localStorage.removeItem("yuttinEventTapCount");
-          window.location.href = "main.html";
-        });
+        // 3秒後に画像をクリック可能にして、クリックでmain.htmlに戻る
+        setTimeout(() => {
+          eventImage.style.cursor = "pointer";
+          eventImage.addEventListener("click", () => {
+            localStorage.removeItem("yuttinEventTapCount");
+            window.location.href = "main.html";
+          });
+        }, 3000);
       });
     </script>
   </body>
