@@ -31,7 +31,7 @@ body {
 
 /* タイトル画面 */
 #title-screen {
-  background-image: url("images/kusamura.png");
+  background-image: url("images/title_kaihen2.png");
   background-size: cover;
   background-position: center;
   position: relative;
@@ -74,12 +74,12 @@ body {
 
 .start-button {
   position: absolute;
-  bottom: 10%;
+  bottom: 20%;
   left: 50%;
   transform: translateX(-50%);
-  padding: 15px 40px;
-  font-size: 1.5em;
-  background-color: rgba(0, 100, 200, 0.8);
+  padding: 20px 60px;
+  font-size: 1.8em;
+  background-color: #f18b1a;
   color: white;
   border: none;
   border-radius: 10px;
@@ -788,8 +788,28 @@ body {
 
 .story-actions {
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  width: 100%;
+  padding-right: 60px;
+}
+
+.next-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+#audio-warning {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  color: #fff;
+  background: rgba(0,0,0,0.5);
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  white-space: nowrap;
 }
 
 #next-button {
@@ -801,10 +821,8 @@ body {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-right: 100px;
-  margin-top: 0;
-  position: relative;
-  top: -60px;
+  margin: 12px 0 0 0;
+  /* 右寄せにするため位置調整は .story-actions の padding-right で行う */
 }
 
 #next-button:hover {

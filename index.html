@@ -9,10 +9,27 @@
     <main class="story-panel" role="main">
       <div id="story" class="story-text" aria-live="polite"></div>
       <div class="story-actions">
-        <button id="next-button" type="button">進む</button>
+        <div class="next-wrap">
+          <button id="next-button" type="button">進む</button>
+          <p id="audio-warning">※このゲームは音が鳴ります。音量に注意してください。</p>
+        </div>
       </div>
     </main>
 
     <script src="script.js"></script>
+    <script>
+      // 警告文を next-button が一度押されたら自動消去
+      document.addEventListener('DOMContentLoaded', () => {
+        const nextBtn = document.getElementById('next-button');
+        const warn = document.getElementById('audio-warning');
+        if (nextBtn && warn) {
+          const removeWarn = () => {
+            warn.remove();
+            nextBtn.removeEventListener('click', removeWarn);
+          };
+          nextBtn.addEventListener('click', removeWarn);
+        }
+      });
+    </script>
   </body>
 </html>
