@@ -47,8 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (heheSound) {
     heheSound.volume = 1.0;
   }
-  
-  const explosionSound = !isRasuto ? new Audio("sounds/Explosion01-2(Long).mp3") : null;
+
+  const explosionSound = !isRasuto
+    ? new Audio("sounds/Explosion01-2(Long).mp3")
+    : null;
   if (explosionSound) {
     explosionSound.volume = 0.5;
   }
@@ -120,6 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const evolutionScreen = document.getElementById("evolution-screen");
   const evolutionTapCount = document.getElementById("evolution-tap-count");
   const gameScreen = document.getElementById("game-screen");
+  const heheToggle = document.getElementById("hehe-toggle");
 
   let exitSequenceTimeout;
   let exitSecondTimeout;
@@ -131,6 +134,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const isUramain = window.location.pathname.endsWith("uramain.html");
   const isMain = window.location.pathname.endsWith("main.html") && !isUramain;
   const boxSound = isMain || isUramain ? new Audio("sounds/box.mp3") : null;
+  const heheClickSound =
+    isMain || isUramain ? new Audio("sounds/hehe_T01.wav") : null;
+  if (heheClickSound) {
+    heheClickSound.volume = 1.0;
+  }
+
+  let isHeheEnabled = false;
+  const updateHeheToggle = () => {
+    if (!heheToggle) {
+      return;
+    }
+    heheToggle.setAttribute("aria-pressed", String(isHeheEnabled));
+    heheToggle.textContent = isHeheEnabled
+      ? "へへモード: ON"
+      : "へへモード: OFF";
+  };
+
+  if (heheToggle) {
+    heheToggle.addEventListener("click", () => {
+      isHeheEnabled = !isHeheEnabled;
+      updateHeheToggle();
+    });
+    updateHeheToggle();
+  }
 
   // event.htmlから戻ってきた場合の処理
   if (isMain) {
@@ -287,6 +314,12 @@ document.addEventListener("DOMContentLoaded", () => {
       // uramainで100回に達している場合はクリックを無効化
       if (isUramain && tapCount >= 100) {
         return;
+      }
+      if (heheClickSound && isHeheEnabled) {
+        heheClickSound.currentTime = 0;
+        heheClickSound.play().catch((error) => {
+          console.log("音声の再生に失敗:", error);
+        });
       }
       // カウントを増加
       tapCount++;
