@@ -325,6 +325,12 @@
       const speechBubble = document.getElementById("speech-bubble");
       const hungryModal = document.getElementById("hungry-modal");
 
+      // 悲しいシーケンス用の効果音（プロジェクト内に sounds/kanasimi_asioto.mp3 を置いてください）
+      const kanashimiSe = new Audio("sounds/kanasimi_asioto.mp3");
+      kanashimiSe.preload = "auto";
+      // モーダル表示中は効果音を抑制するフラグ
+      let suppressKanashimiSe = false;
+
       // ページ読み込み時にモーダルを2秒表示
       window.addEventListener("load", () => {
         hungryModal.removeAttribute("hidden");
@@ -337,6 +343,8 @@
       noGiveButton.addEventListener("click", () => {
         // 画像を変更
         eventImage.src = "images/kanasimicchin_mini.png";
+        // （モーダル表示中は鳴らさない）
+        // 初期クリック時はモーダルを表示するため、ここでは再生しない
 
         // ボタンを非表示にして二度押し防止
         const buttonContainer = document.querySelector(".button-container");
@@ -365,11 +373,16 @@
             <p class="event-modal__title">ゆっちんが悲しんでいる</p>
           </div>
         `;
+        // モーダル表示中は効果音を抑制する
+        suppressKanashimiSe = true;
         eventScreen.appendChild(sadModal);
 
         // 2.5秒後にモーダルを消して、その後に画像シーケンスを表示
+
         setTimeout(() => {
           sadModal.style.display = "none";
+          // モーダルを消したので効果音を再開
+          suppressKanashimiSe = false;
 
           // シーケンス中はクリック無効化
           eventImage.style.pointerEvents = "none";
@@ -379,14 +392,17 @@
           const showMini = () => {
             eventImage.src = "images/kanasimicchin_mini.png";
             eventImage.style.transform = "translate(-50%, -50%) scale(1.25)";
+            if (!suppressKanashimiSe) { try { kanashimiSe.currentTime = 0; kanashimiSe.play(); } catch (e) {} }
           };
           const showTyu = () => {
             eventImage.src = "images/kanasimicchin_tyu.png";
             eventImage.style.transform = "translate(-50%, -50%) scale(1.55)";
+            if (!suppressKanashimiSe) { try { kanashimiSe.currentTime = 0; kanashimiSe.play(); } catch (e) {} }
           };
           const showFull = () => {
             eventImage.src = "images/kanasimicchin.png";
             eventImage.style.transform = "translate(-50%, -50%) scale(1.85)";
+            if (!suppressKanashimiSe) { try { kanashimiSe.currentTime = 0; kanashimiSe.play(); } catch (e) {} }
 
             // kanasimicchin.png表示後に吹き出しを表示してクリックで戻るようにする
             setTimeout(() => {
