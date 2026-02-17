@@ -374,9 +374,132 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 200回に達したら結果画面へ遷移
+      // 200回に達したら、より派手で面白い爆発エフェクトを出す
       if (tapCount === 200) {
-        startExitSequence();
+        yearsImage.style.pointerEvents = "none";
+
+        // 音声を用意（短い爆発 + 余韻の重ね）
+        let explosionShort, explosionBoom;
+        try {
+          explosionShort = new Audio("sounds/Explosion03-2(Short).mp3");
+          explosionShort.volume = 1.0;
+        } catch (e) {
+          console.log("短い爆発SEが読み込めません:", e);
+        }
+        try {
+          explosionBoom = new Audio("sounds/Explosion_Boom_Long.mp3");
+          explosionBoom.volume = 0.9;
+        } catch (e) {
+          // ファイルが無ければ無視
+        }
+
+        // スタイル（粒子・煙・デブリ・フラッシュ・爆風）を追加
+        const efStyle = document.createElement('style');
+        efStyle.textContent = `
+          @keyframes particleFly { 0% { transform: translateY(0) scale(1); opacity:1 } 100% { transform: translateY(-260px) translateX(var(--tx,0)) scale(0.5); opacity:0 } }
+          @keyframes debrisFall { 0% { transform: translateY(0) rotate(0deg); opacity:1 } 100% { transform: translateY(320px) rotate(720deg); opacity:0 } }
+          @keyframes smokeRise { 0% { transform: translateY(0) scale(0.7); opacity:0.6 } 100% { transform: translateY(-200px) scale(1.8); opacity:0 } }
+          @keyframes flashPulse { 0%{ opacity: 1 } 40%{ opacity:0.85 } 100%{ opacity:0 } }
+          @keyframes shockWave { 0%{ transform: scale(0.2); opacity:0.9 } 60%{ transform: scale(1.1); opacity:0.6 } 100%{ transform: scale(1.6); opacity:0 } }
+          @keyframes screenShake { 0%{ transform: translateX(0)} 20%{ transform: translateX(-12px)} 40%{ transform: translateX(10px)} 60%{ transform: translateX(-6px)} 80%{ transform: translateX(4px)} 100%{ transform: translateX(0)} }
+
+          .expl-root{ position: fixed; left:50%; top:45%; transform: translate(-50%,-50%); width: 620px; height: 620px; pointer-events:none; z-index:9999; }
+          .expl-flash{ position: fixed; left:0; top:0; right:0; bottom:0; background: radial-gradient(circle at 50% 40%, #fff 0%, #ffdba6 25%, rgba(255,100,10,0.12) 50%, rgba(0,0,0,0) 70%); opacity:0; z-index:9998; animation: flashPulse 520ms ease-out forwards; }
+          .expl-shock{ position:absolute; left:50%; top:50%; width:120px; height:120px; border-radius:50%; background: radial-gradient(circle, rgba(255,255,255,0.9), rgba(255,200,150,0.6), rgba(255,120,60,0.2)); transform: translate(-50%,-50%); filter: blur(12px); animation: shockWave 700ms ease-out forwards; z-index:9999 }
+          .expl-particle{ position:absolute; bottom:50%; left:50%; width:12px; height:12px; border-radius:50%; will-change: transform, opacity; }
+          .expl-debris{ position:absolute; bottom:48%; left:50%; width:10px; height:10px; background:#5c3d22; will-change:transform,opacity; }
+          .expl-smoke{ position:absolute; bottom:40%; left:50%; width:360px; height:200px; border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(200,200,200,0.95), rgba(160,160,160,0.7) 30%, rgba(120,120,120,0.5) 60%, rgba(0,0,0,0) 100%); filter: blur(14px); opacity:0.6; transform:translateX(-50%); }
+          .body-shake{ animation: screenShake 700ms ease-in-out; }
+        `;
+        document.head.appendChild(efStyle);
+
+        // ルート
+        const root = document.createElement('div');
+        root.className = 'expl-root';
+
+        // フラッシュ全画面
+        const flash = document.createElement('div');
+        flash.className = 'expl-flash';
+        document.body.appendChild(flash);
+
+        // デブリ
+        const dCount = 18;
+        for (let i=0;i<dCount;i++){
+          const d = document.createElement('div');
+          d.className = 'expl-debris';
+          const w = 6 + Math.random()*22;
+          d.style.width = w+'px';
+          d.style.height = (4 + Math.random()*12)+'px';
+          d.style.left = (48 + (Math.random()-0.5)*28) + '%';
+          d.style.bottom = '48%';
+          d.style.background = `rgba(${80+Math.floor(Math.random()*80)}, ${40+Math.floor(Math.random()*60)}, ${20+Math.floor(Math.random()*40)}, 1)`;
+          d.style.animation = `debrisFall ${900 + Math.floor(Math.random()*1200)}ms cubic-bezier(.2,.8,.3,1) forwards`;
+          d.style.transform = `rotate(${Math.floor(Math.random()*720)}deg)`;
+          root.appendChild(d);
+        }
+
+        // 煙
+        for (let i=0;i<3;i++){
+          const s = document.createElement('div');
+          s.className = 'expl-smoke';
+          s.style.left = (50 + (i-1)*18) + '%';
+          s.style.opacity = (0.45 + Math.random()*0.35).toString();
+          s.style.animation = `smokeRise ${1200 + i*300}ms ease-out forwards`;
+          root.appendChild(s);
+        }
+
+        document.body.appendChild(root);
+
+        // 画面揺れ
+        document.body.classList.add('body-shake');
+
+        // 再生: 短い衝撃音 → 余韻のブーム
+        if (explosionShort) {
+          try { explosionShort.currentTime = 0; explosionShort.play().catch(()=>{}); } catch(e){}
+        }
+        if (explosionBoom) {
+          setTimeout(()=>{ try{ explosionBoom.currentTime=0; explosionBoom.play().catch(()=>{}); }catch(e){} }, 120);
+        }
+
+        // エフェクト完了後にテキスト表示（少し長めにして派手さを見せる）
+        setTimeout(()=>{
+          // クリーンアップ
+          if (root && root.parentNode) root.parentNode.removeChild(root);
+          if (flash && flash.parentNode) flash.parentNode.removeChild(flash);
+          if (efStyle && efStyle.parentNode) efStyle.parentNode.removeChild(efStyle);
+          document.body.classList.remove('body-shake');
+
+          // モーダル表示（画像のスタイルに合わせる）
+          const explosionOverlay = document.createElement('div');
+          explosionOverlay.style.position = 'fixed';
+          explosionOverlay.style.left = '50%';
+          explosionOverlay.style.top = '50%';
+          explosionOverlay.style.transform = 'translate(-50%, -50%)';
+          explosionOverlay.style.backgroundColor = 'white';
+          explosionOverlay.style.border = '3px solid #111';
+          explosionOverlay.style.borderRadius = '10px';
+          explosionOverlay.style.padding = '20px 32px';
+          explosionOverlay.style.boxShadow = '0 6px 12px rgba(0,0,0,0.25)';
+          explosionOverlay.style.zIndex = '10000';
+          explosionOverlay.style.width = 'min(980px, 90vw)';
+          explosionOverlay.style.textAlign = 'center';
+          explosionOverlay.style.fontSize = '24px';
+          explosionOverlay.style.fontWeight = '600';
+          explosionOverlay.style.color = '#111';
+          explosionOverlay.style.lineHeight = '1.6';
+          explosionOverlay.textContent = 'あなたはなですぎました。';
+          document.body.appendChild(explosionOverlay);
+
+          setTimeout(()=>{
+            explosionOverlay.textContent = '見てください。ゆっちんが照れて爆発しました。';
+            setTimeout(()=>{
+              if (explosionOverlay && explosionOverlay.parentNode) explosionOverlay.parentNode.removeChild(explosionOverlay);
+              startExitSequence();
+            }, 2000);
+          }, 3000);
+
+        }, 1400);
+
         return;
       }
 
