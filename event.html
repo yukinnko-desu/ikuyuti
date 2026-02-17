@@ -254,6 +254,35 @@
       .happy-speech-bubble.animated {
         animation: bubblePop 0.5s ease-out;
       }
+
+      .sad-speech-bubble {
+        position: absolute;
+        top: 32%;
+        left: 65%;
+        transform: translateY(-50%);
+        width: 180px;
+        padding: 12px 16px;
+        background-color: white;
+        color: #222;
+        border: 2px solid #333;
+        border-radius: 16px;
+        font-size: 20px;
+        font-weight: 600;
+        white-space: nowrap;
+        z-index: 6;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      }
+
+      .sad-speech-bubble::before {
+        content: "";
+        position: absolute;
+        left: -16px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 8px 16px 8px 0;
+        border-style: solid;
+        border-color: transparent #333 transparent transparent;
+      }
     </style>
   </head>
   <body>
@@ -304,10 +333,90 @@
         }, 2000);
       });
 
-      // 「あげない」ボタン - main.htmlに戻る
+      // 「あげない」ボタン - 画像を悲しいものに変えてからmain.htmlに戻る
       noGiveButton.addEventListener("click", () => {
-        localStorage.removeItem("yuttinEventTapCount");
-        window.location.href = "main.html";
+        // 画像を変更
+        eventImage.src = "images/kanasimicchin_mini.png";
+
+        // ボタンを非表示にして二度押し防止
+        const buttonContainer = document.querySelector(".button-container");
+        if (buttonContainer) {
+          buttonContainer.style.display = "none";
+        }
+
+        // スピーチバブルを非表示
+        if (speechBubble) {
+          speechBubble.style.display = "none";
+        }
+
+        // 悲しい吹き出しを表示（文言は「かなしいです…」）
+        const sadSpeechBubble = document.createElement("div");
+        sadSpeechBubble.className = "sad-speech-bubble";
+        sadSpeechBubble.textContent = "かなしいです…";
+        sadSpeechBubble.style.display = "none";  // 初期状態では非表示
+        const eventScreen = document.querySelector(".event-screen");
+        eventScreen.appendChild(sadSpeechBubble);
+
+        // 「ゆっちんが悲しんでいる」モーダルを作成・表示
+        const sadModal = document.createElement("div");
+        sadModal.className = "event-modal";
+        sadModal.innerHTML = `
+          <div class="event-modal__card">
+            <p class="event-modal__title">ゆっちんが悲しんでいる</p>
+          </div>
+        `;
+        eventScreen.appendChild(sadModal);
+
+        // 2.5秒後にモーダルを消して、その後に画像シーケンスを表示
+        setTimeout(() => {
+          sadModal.style.display = "none";
+
+          // シーケンス中はクリック無効化
+          eventImage.style.pointerEvents = "none";
+          sadSpeechBubble.style.pointerEvents = "none";
+
+          // シーケンス: mini -> tyu -> full
+          const showMini = () => {
+            eventImage.src = "images/kanasimicchin_mini.png";
+            eventImage.style.transform = "translate(-50%, -50%) scale(1.25)";
+          };
+          const showTyu = () => {
+            eventImage.src = "images/kanasimicchin_tyu.png";
+            eventImage.style.transform = "translate(-50%, -50%) scale(1.55)";
+          };
+          const showFull = () => {
+            eventImage.src = "images/kanasimicchin.png";
+            eventImage.style.transform = "translate(-50%, -50%) scale(1.85)";
+
+            // kanasimicchin.png表示後に吹き出しを表示してクリックで戻るようにする
+            setTimeout(() => {
+              sadSpeechBubble.style.display = "block";
+              sadSpeechBubble.style.cursor = "pointer";
+              eventImage.style.cursor = "pointer";
+              eventImage.style.pointerEvents = "auto";
+              sadSpeechBubble.style.pointerEvents = "auto";
+
+              const onSadClick = () => {
+                eventImage.removeEventListener("click", onSadClick);
+                sadSpeechBubble.removeEventListener("click", onSadClick);
+                localStorage.removeItem("yuttinEventTapCount");
+                window.location.href = "main.html";
+              };
+
+              eventImage.addEventListener("click", onSadClick);
+              sadSpeechBubble.addEventListener("click", onSadClick);
+            }, 300);
+          };
+
+          // 実行タイミング
+          showMini();
+          setTimeout(() => {
+            showTyu();
+            setTimeout(() => {
+              showFull();
+            }, 700);
+          }, 700);
+        }, 2500);
       });
 
       // 「あげる」ボタン - 画像をyorokobi.jpgに変更
