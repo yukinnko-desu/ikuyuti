@@ -47,6 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (heheSound) {
     heheSound.volume = 1.0;
   }
+  
+  const explosionSound = !isRasuto ? new Audio("sounds/Explosion01-2(Long).mp3") : null;
+  if (explosionSound) {
+    explosionSound.volume = 0.5;
+  }
 
   // 進むボタン（ストーリー画面）
   if (nextButton && storyText) {
@@ -61,6 +66,13 @@ document.addEventListener("DOMContentLoaded", () => {
           heheSound.currentTime = 0;
           heheSound.play().catch((error) => {
             console.log("音声の再生に失敗:", error);
+          });
+        }
+        // 非 rasuto モードで、2 番目のストーリー（空から落ちてくる）の時に SE を再生
+        if (explosionSound && !isRasuto && currentStoryIndex === 1) {
+          explosionSound.currentTime = 0;
+          explosionSound.play().catch((error) => {
+            console.log("SE の再生に失敗:", error);
           });
         }
         currentStoryIndex++;
