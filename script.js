@@ -109,6 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const evolutionTapCount = document.getElementById("evolution-tap-count");
   const gameScreen = document.getElementById("game-screen");
 
+  let exitSequenceTimeout;
+  let exitSecondTimeout;
+
   let tapCount = 0;
   let firstTapAt = null;
   let evolutionScreenShown = false;
@@ -149,6 +152,58 @@ document.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("yuttinTapCount", String(tapCount));
     localStorage.setItem("yuttinTapSpeed", speed.toFixed(2));
+  };
+
+  const closeExitResultModal = () => {
+    if (exitResultModal) {
+      exitResultModal.setAttribute("hidden", "");
+    }
+  };
+
+  const closeExitSecondModal = () => {
+    if (exitSecondModal) {
+      exitSecondModal.setAttribute("hidden", "");
+    }
+  };
+
+  const scheduleExitSecondModal = () => {
+    if (exitSequenceTimeout) {
+      clearTimeout(exitSequenceTimeout);
+    }
+    exitSequenceTimeout = setTimeout(() => {
+      closeExitResultModal();
+      if (exitSecondModal) {
+        exitSecondModal.removeAttribute("hidden");
+        if (boxSound) {
+          boxSound.currentTime = 0;
+          boxSound.play().catch((error) => {
+            console.log("音声の再生に失敗:", error);
+          });
+        }
+      } else {
+        window.location.href = "kekka.html";
+      }
+    }, 2500);
+  };
+
+  const startExitSequence = () => {
+    persistResult();
+    if (exitResultModal) {
+      exitResultModal.removeAttribute("hidden");
+      scheduleExitSecondModal();
+      return;
+    }
+    if (exitSecondModal) {
+      exitSecondModal.removeAttribute("hidden");
+      if (boxSound) {
+        boxSound.currentTime = 0;
+        boxSound.play().catch((error) => {
+          console.log("音声の再生に失敗:", error);
+        });
+      }
+      return;
+    }
+    window.location.href = "kekka.html";
   };
 
   if (yearsImage && window.location.pathname.endsWith("uramain.html")) {
@@ -266,8 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 200回に達したら結果画面へ遷移
       if (tapCount === 200) {
-        persistResult();
-        window.location.href = "kekka.html";
+        startExitSequence();
         return;
       }
 
@@ -293,42 +347,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (backHomeButton && exitModal) {
-    let exitSequenceTimeout;
-    let exitSecondTimeout;
     const closeExitModal = () => {
       exitModal.setAttribute("hidden", "");
-    };
-
-    const closeExitResultModal = () => {
-      if (exitResultModal) {
-        exitResultModal.setAttribute("hidden", "");
-      }
-    };
-
-    const closeExitSecondModal = () => {
-      if (exitSecondModal) {
-        exitSecondModal.setAttribute("hidden", "");
-      }
-    };
-
-    const scheduleExitSecondModal = () => {
-      if (exitSequenceTimeout) {
-        clearTimeout(exitSequenceTimeout);
-      }
-      exitSequenceTimeout = setTimeout(() => {
-        closeExitResultModal();
-        if (exitSecondModal) {
-          exitSecondModal.removeAttribute("hidden");
-          if (boxSound) {
-            boxSound.currentTime = 0;
-            boxSound.play().catch((error) => {
-              console.log("音声の再生に失敗:", error);
-            });
-          }
-        } else {
-          window.location.href = "kekka.html";
-        }
-      }, 2500);
     };
 
     backHomeButton.addEventListener("click", () => {
@@ -350,11 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
             window.location.href = "title.html";
             return;
           }
-          persistResult();
-          if (exitResultModal) {
-            exitResultModal.removeAttribute("hidden");
-            scheduleExitSecondModal();
-          }
+          startExitSequence();
           return;
         }
         closeExitModal();
