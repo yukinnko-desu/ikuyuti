@@ -141,6 +141,37 @@
       .no-give-button:hover {
         background-color: #da190b;
       }
+
+      .event-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.35);
+        z-index: 100;
+      }
+
+      .event-modal__card {
+        background-color: white;
+        border: 2px solid #111;
+        border-radius: 6px;
+        padding: 24px 32px;
+        width: min(720px, 88vw);
+        text-align: center;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+      }
+
+      .event-modal__title {
+        font-size: 24px;
+        font-weight: 700;
+        color: black;
+        margin: 0;
+        line-height: 1.6;
+      }
     </style>
   </head>
   <body>
@@ -164,6 +195,14 @@
           あげない
         </button>
       </div>
+
+      <div id="hungry-modal" class="event-modal" hidden>
+        <div class="event-modal__card">
+          <p class="event-modal__title" id="hungry-text">
+            おなかがすいたみたい
+          </p>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -173,9 +212,15 @@
       const noGiveButton = document.getElementById("no-give-button");
       const eventImage = document.getElementById("event-image");
       const speechBubble = document.getElementById("speech-bubble");
+      const hungryModal = document.getElementById("hungry-modal");
 
-      // メッセージを固定
-      messageElement.textContent = "おなかがすいたみたい";
+      // ページ読み込み時にモーダルを2秒表示
+      window.addEventListener("load", () => {
+        hungryModal.removeAttribute("hidden");
+        setTimeout(() => {
+          hungryModal.style.display = "none";
+        }, 2000);
+      });
 
       // 「あげない」ボタン - main.htmlに戻る
       noGiveButton.addEventListener("click", () => {
@@ -186,15 +231,30 @@
       // 「あげる」ボタン - 画像をyorokobi.jpgに変更
       giveButton.addEventListener("click", () => {
         eventImage.src = "images/yorokobi.jpg";
-        messageElement.textContent = "ゆっちんがうれしそう";
-        messageElement.classList.add("event-message--happy");
+        
+        // ボタンを非表示
+        const buttonContainer = document.querySelector(".button-container");
+        buttonContainer.style.display = "none";
+        
+        // スピーチバブルを非表示
         if (speechBubble) {
           speechBubble.style.display = "none";
         }
 
-        // ボタンを非表示
-        const buttonContainer = document.querySelector(".button-container");
-        buttonContainer.style.display = "none";
+        // 「ゆっちんがうれしそう」モーダルを作成・表示
+        const happyModal = document.createElement("div");
+        happyModal.className = "event-modal";
+        happyModal.innerHTML = `
+          <div class="event-modal__card">
+            <p class="event-modal__title">ゆっちんがうれしそう</p>
+          </div>
+        `;
+        document.querySelector(".event-screen").appendChild(happyModal);
+
+        // 2秒後にモーダルを消す
+        setTimeout(() => {
+          happyModal.style.display = "none";
+        }, 2000);
 
         // 画像をクリック可能にして、クリックでmain.htmlに戻る
         eventImage.style.cursor = "pointer";
