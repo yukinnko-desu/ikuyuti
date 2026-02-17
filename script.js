@@ -135,6 +135,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (firstTapAtBackup) {
         firstTapAt = parseInt(firstTapAtBackup, 10);
         localStorage.removeItem("yuttinFirstTapAtBackup");
+
+        // event.html中に経過した時間を計測から除外
+        const eventEnterTime = localStorage.getItem("yuttinEventEnterTime");
+        if (eventEnterTime) {
+          const eventDuration = Date.now() - parseInt(eventEnterTime, 10);
+          firstTapAt += eventDuration; // event.html中の時間を計測から除外（加算で後ろにシフト）
+          localStorage.removeItem("yuttinEventEnterTime");
+        }
       }
     }
   }
@@ -284,6 +292,8 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("yuttinTapCountBackup", String(tapCount));
         if (firstTapAt) {
           localStorage.setItem("yuttinFirstTapAtBackup", String(firstTapAt));
+          // event.htmlに入った時刻を記録
+          localStorage.setItem("yuttinEventEnterTime", String(Date.now()));
         }
         window.location.href = "event.html";
         return;
