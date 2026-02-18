@@ -328,6 +328,9 @@
       // 悲しいシーケンス用の効果音（プロジェクト内に sounds/kanasimi_asioto.mp3 を置いてください）
       const kanashimiSe = new Audio("sounds/kanasimi_asioto.mp3");
       kanashimiSe.preload = "auto";
+      // 喜びシーン用の効果音
+      const sambaSe = new Audio("sounds/Samba Janeiro Full.mp3");
+      sambaSe.preload = "auto";
       // モーダル表示中は効果音を抑制するフラグ
       let suppressKanashimiSe = false;
 
@@ -470,6 +473,11 @@
         // 2秒後にモーダルを消す
         setTimeout(() => {
           happyModal.style.display = "none";
+          // 「ゆっちんがうれしそう」消去後にSEを再生
+          sambaSe.currentTime = 0;
+          sambaSe.play().catch((error) => {
+            console.log("音声の再生に失敗:", error);
+          });
         }, 2500);
 
         // 3秒後に画像をクリック可能にして、クリックでmain.htmlに戻る
