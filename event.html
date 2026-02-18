@@ -283,6 +283,42 @@
         border-style: solid;
         border-color: transparent #333 transparent transparent;
       }
+
+      .rain-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 50;
+        overflow: hidden;
+      }
+
+      .rain-drop {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        background-image: url("images/marugeri-ta.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+
+      @keyframes rainFall {
+        0% {
+          transform: translateY(-100px) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(100vh) rotate(360deg);
+          opacity: 0.3;
+        }
+      }
+
+      .rain-drop.falling {
+        animation: rainFall linear forwards;
+      }
     </style>
   </head>
   <body>
@@ -325,7 +361,51 @@
       const speechBubble = document.getElementById("speech-bubble");
       const hungryModal = document.getElementById("hungry-modal");
 
-      // 悲しいシーケンス用の効果音（プロジェクト内に sounds/kanasimi_asioto.mp3 を置いてください）
+      // マルゲリータ雨を生成する関数
+      function startRain() {
+        const rainContainer = document.createElement("div");
+        rainContainer.className = "rain-container";
+        document.body.appendChild(rainContainer);
+
+        const rainDuration = 16000; // 16秒
+        const dropCount = 30; // 降らせる画像数
+        const dropDuration = 3000; // 各ドロップが落ちるのにかかる時間（ミリ秒）
+
+        // 初期ドロップを生成
+        function createDrop() {
+          const drop = document.createElement("div");
+          drop.className = "rain-drop falling";
+          drop.style.left = Math.random() * 100 + "%";
+          drop.style.animationDuration = (dropDuration + Math.random() * 2000) + "ms";
+          drop.style.animationDelay = Math.random() * 1000 + "ms";
+          rainContainer.appendChild(drop);
+
+          // アニメーション終了後にドロップを削除
+          const animationDuration = parseFloat(drop.style.animationDuration);
+          const animationDelay = parseFloat(drop.style.animationDelay);
+          setTimeout(() => {
+            drop.remove();
+          }, animationDuration + animationDelay);
+        }
+
+        // 16秒間、定期的にドロップを生成
+        const rainInterval = setInterval(() => {
+          for (let i = 0; i < 3; i++) {
+            createDrop();
+          }
+        }, 200);
+
+        // 16秒後に雨を停止
+        setTimeout(() => {
+          clearInterval(rainInterval);
+          // 残りのドロップがアニメーション終了後に自動削除されるため、
+          // ここではコンテナ全体を削除するのを少し遅延させる
+          setTimeout(() => {
+            rainContainer.remove();
+          }, dropDuration + 1000);
+        }, rainDuration);
+      }
+    
       const kanashimiSe = new Audio("sounds/kanasimi_asioto.mp3");
       kanashimiSe.preload = "auto";
       // 喜びシーン用の効果音
@@ -478,6 +558,9 @@
           sambaSe.play().catch((error) => {
             console.log("音声の再生に失敗:", error);
           });
+
+          // マルゲリータを雨のように降らせる
+          startRain();
         }, 2500);
 
         // 3秒後に画像をクリック可能にして、クリックでmain.htmlに戻る
