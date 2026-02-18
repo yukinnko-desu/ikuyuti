@@ -687,18 +687,6 @@ body {
 .dialogue-box::before {
   content: "";
   position: absolute;
-  left: -10px;
-  top: 15px;
-  width: 0;
-  height: 0;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-  border-right: 10px solid rgba(255, 255, 255, 0.95);
-}
-
-.dialogue-box::after {
-  content: "";
-  position: absolute;
   left: -14px;
   top: 13px;
   width: 0;
@@ -706,6 +694,18 @@ body {
   border-top: 10px solid transparent;
   border-bottom: 10px solid transparent;
   border-right: 12px solid #333;
+}
+
+.dialogue-box::after {
+  content: "";
+  position: absolute;
+  left: -10px;
+  top: 15px;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 10px solid rgba(255, 255, 255, 0.95);
 }
 
 .dialogue-box--event {
@@ -885,15 +885,18 @@ body {
 }
 
 #audio-warning {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: #fff;
   background-color: #121212;
-  padding: 8px;
+  padding: 20px 30px;
   border-radius: 6px;
-  font-size: 14px;
-  white-space: nowrap;
+  font-size: 16px;
+  white-space: normal;
+  text-align: center;
+  z-index: 1000;
 }
 
 #next-button {
