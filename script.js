@@ -491,33 +491,32 @@ document.addEventListener("DOMContentLoaded", () => {
             efStyle.parentNode.removeChild(efStyle);
           document.body.classList.remove("body-shake");
 
-          // モーダル表示（画像のスタイルに合わせる）
+          // モーダル表示（exit-modalの構造を再利用して完全に揃える）
           const explosionOverlay = document.createElement("div");
+          explosionOverlay.className = "exit-modal";
           explosionOverlay.style.position = "fixed";
-          explosionOverlay.style.left = "50%";
-          explosionOverlay.style.top = "50%";
-          explosionOverlay.style.transform = "translate(-50%, -50%)";
-          explosionOverlay.style.backgroundColor = "white";
-          explosionOverlay.style.border = "3px solid #111";
-          explosionOverlay.style.borderRadius = "10px";
-          explosionOverlay.style.padding = "20px 32px";
-          explosionOverlay.style.boxShadow = "0 6px 12px rgba(0,0,0,0.25)";
+          explosionOverlay.style.inset = "0";
           explosionOverlay.style.zIndex = "10000";
-          explosionOverlay.style.width = "min(980px, 90vw)";
-          explosionOverlay.style.textAlign = "center";
-          explosionOverlay.style.fontSize = "24px";
-          explosionOverlay.style.fontWeight = "600";
-          explosionOverlay.style.color = "#111";
-          explosionOverlay.style.lineHeight = "1.6";
-          explosionOverlay.textContent = "あなたはなですぎました。";
+
+          const explosionCard = document.createElement("div");
+          explosionCard.className =
+            "exit-modal__card exit-modal__card--message";
+
+          const explosionText = document.createElement("p");
+          explosionText.className = "exit-modal__title";
+          explosionText.textContent = "あなたはなですぎました。";
+
+          explosionCard.appendChild(explosionText);
+          explosionOverlay.appendChild(explosionCard);
           document.body.appendChild(explosionOverlay);
 
           setTimeout(() => {
-            explosionOverlay.textContent =
+            explosionText.textContent =
               "見てください。ゆっちんが照れて爆発しました。";
             setTimeout(() => {
-              if (explosionOverlay && explosionOverlay.parentNode)
+              if (explosionOverlay && explosionOverlay.parentNode) {
                 explosionOverlay.parentNode.removeChild(explosionOverlay);
+              }
               startExitSequence();
             }, 2000);
           }, 3000);
