@@ -394,7 +394,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // スタイル（粒子・煙・デブリ・フラッシュ・爆風）を追加
-        const efStyle = document.createElement('style');
+        const efStyle = document.createElement("style");
         efStyle.textContent = `
           @keyframes particleFly { 0% { transform: translateY(0) scale(1); opacity:1 } 100% { transform: translateY(-260px) translateX(var(--tx,0)) scale(0.5); opacity:0 } }
           @keyframes debrisFall { 0% { transform: translateY(0) rotate(0deg); opacity:1 } 100% { transform: translateY(320px) rotate(720deg); opacity:0 } }
@@ -414,90 +414,98 @@ document.addEventListener("DOMContentLoaded", () => {
         document.head.appendChild(efStyle);
 
         // ルート
-        const root = document.createElement('div');
-        root.className = 'expl-root';
+        const root = document.createElement("div");
+        root.className = "expl-root";
 
         // フラッシュ全画面
-        const flash = document.createElement('div');
-        flash.className = 'expl-flash';
+        const flash = document.createElement("div");
+        flash.className = "expl-flash";
         document.body.appendChild(flash);
 
         // デブリ
         const dCount = 18;
-        for (let i=0;i<dCount;i++){
-          const d = document.createElement('div');
-          d.className = 'expl-debris';
-          const w = 6 + Math.random()*22;
-          d.style.width = w+'px';
-          d.style.height = (4 + Math.random()*12)+'px';
-          d.style.left = (48 + (Math.random()-0.5)*28) + '%';
-          d.style.bottom = '48%';
-          d.style.background = `rgba(${80+Math.floor(Math.random()*80)}, ${40+Math.floor(Math.random()*60)}, ${20+Math.floor(Math.random()*40)}, 1)`;
-          d.style.animation = `debrisFall ${900 + Math.floor(Math.random()*1200)}ms cubic-bezier(.2,.8,.3,1) forwards`;
-          d.style.transform = `rotate(${Math.floor(Math.random()*720)}deg)`;
+        for (let i = 0; i < dCount; i++) {
+          const d = document.createElement("div");
+          d.className = "expl-debris";
+          const w = 6 + Math.random() * 22;
+          d.style.width = w + "px";
+          d.style.height = 4 + Math.random() * 12 + "px";
+          d.style.left = 48 + (Math.random() - 0.5) * 28 + "%";
+          d.style.bottom = "48%";
+          d.style.background = `rgba(${80 + Math.floor(Math.random() * 80)}, ${40 + Math.floor(Math.random() * 60)}, ${20 + Math.floor(Math.random() * 40)}, 1)`;
+          d.style.animation = `debrisFall ${900 + Math.floor(Math.random() * 1200)}ms cubic-bezier(.2,.8,.3,1) forwards`;
+          d.style.transform = `rotate(${Math.floor(Math.random() * 720)}deg)`;
           root.appendChild(d);
         }
 
         // 煙
-        for (let i=0;i<3;i++){
-          const s = document.createElement('div');
-          s.className = 'expl-smoke';
-          s.style.left = (50 + (i-1)*18) + '%';
-          s.style.opacity = (0.45 + Math.random()*0.35).toString();
-          s.style.animation = `smokeRise ${1200 + i*300}ms ease-out forwards`;
+        for (let i = 0; i < 3; i++) {
+          const s = document.createElement("div");
+          s.className = "expl-smoke";
+          s.style.left = 50 + (i - 1) * 18 + "%";
+          s.style.opacity = (0.45 + Math.random() * 0.35).toString();
+          s.style.animation = `smokeRise ${1200 + i * 300}ms ease-out forwards`;
           root.appendChild(s);
         }
 
         document.body.appendChild(root);
 
         // 画面揺れ
-        document.body.classList.add('body-shake');
+        document.body.classList.add("body-shake");
 
         // 再生: 短い衝撃音 → 余韻のブーム
         if (explosionShort) {
-          try { explosionShort.currentTime = 0; explosionShort.play().catch(()=>{}); } catch(e){}
+          try {
+            explosionShort.currentTime = 0;
+            explosionShort.play().catch(() => {});
+          } catch (e) {}
         }
         if (explosionBoom) {
-          setTimeout(()=>{ try{ explosionBoom.currentTime=0; explosionBoom.play().catch(()=>{}); }catch(e){} }, 120);
+          setTimeout(() => {
+            try {
+              explosionBoom.currentTime = 0;
+              explosionBoom.play().catch(() => {});
+            } catch (e) {}
+          }, 120);
         }
 
         // エフェクト完了後にテキスト表示（少し長めにして派手さを見せる）
-        setTimeout(()=>{
+        setTimeout(() => {
           // クリーンアップ
           if (root && root.parentNode) root.parentNode.removeChild(root);
           if (flash && flash.parentNode) flash.parentNode.removeChild(flash);
-          if (efStyle && efStyle.parentNode) efStyle.parentNode.removeChild(efStyle);
-          document.body.classList.remove('body-shake');
+          if (efStyle && efStyle.parentNode)
+            efStyle.parentNode.removeChild(efStyle);
+          document.body.classList.remove("body-shake");
 
-          // モーダル表示（画像のスタイルに合わせる）
-          const explosionOverlay = document.createElement('div');
-          explosionOverlay.style.position = 'fixed';
-          explosionOverlay.style.left = '50%';
-          explosionOverlay.style.top = '50%';
-          explosionOverlay.style.transform = 'translate(-50%, -50%)';
-          explosionOverlay.style.backgroundColor = 'white';
-          explosionOverlay.style.border = '3px solid #111';
-          explosionOverlay.style.borderRadius = '10px';
-          explosionOverlay.style.padding = '20px 32px';
-          explosionOverlay.style.boxShadow = '0 6px 12px rgba(0,0,0,0.25)';
-          explosionOverlay.style.zIndex = '10000';
-          explosionOverlay.style.width = 'min(980px, 90vw)';
-          explosionOverlay.style.textAlign = 'center';
-          explosionOverlay.style.fontSize = '24px';
-          explosionOverlay.style.fontWeight = '600';
-          explosionOverlay.style.color = '#111';
-          explosionOverlay.style.lineHeight = '1.6';
-          explosionOverlay.textContent = 'あなたはなですぎました。';
+          // モーダル表示（exit-modalの構造を再利用して完全に揃える）
+          const explosionOverlay = document.createElement("div");
+          explosionOverlay.className = "exit-modal";
+          explosionOverlay.style.position = "fixed";
+          explosionOverlay.style.inset = "0";
+          explosionOverlay.style.zIndex = "10000";
+
+          const explosionCard = document.createElement("div");
+          explosionCard.className =
+            "exit-modal__card exit-modal__card--message";
+
+          const explosionText = document.createElement("p");
+          explosionText.className = "exit-modal__title";
+          explosionText.textContent = "あなたはなですぎました。";
+
+          explosionCard.appendChild(explosionText);
+          explosionOverlay.appendChild(explosionCard);
           document.body.appendChild(explosionOverlay);
 
-          setTimeout(()=>{
-            explosionOverlay.textContent = '見てください。ゆっちんが照れて爆発しました。';
-            setTimeout(()=>{
-              if (explosionOverlay && explosionOverlay.parentNode) explosionOverlay.parentNode.removeChild(explosionOverlay);
+          setTimeout(() => {
+            explosionText.textContent =
+              "見てください。ゆっちんが照れて爆発しました。";
+            setTimeout(() => {
+              if (explosionOverlay && explosionOverlay.parentNode)
+                explosionOverlay.parentNode.removeChild(explosionOverlay);
               startExitSequence();
             }, 2000);
           }, 3000);
-
         }, 1400);
 
         return;

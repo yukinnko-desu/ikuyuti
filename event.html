@@ -270,7 +270,7 @@
         font-weight: 600;
         white-space: nowrap;
         z-index: 6;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       }
 
       .sad-speech-bubble::before {
@@ -376,7 +376,8 @@
           const drop = document.createElement("div");
           drop.className = "rain-drop falling";
           drop.style.left = Math.random() * 100 + "%";
-          drop.style.animationDuration = (dropDuration + Math.random() * 2000) + "ms";
+          drop.style.animationDuration =
+            dropDuration + Math.random() * 2000 + "ms";
           drop.style.animationDelay = Math.random() * 1000 + "ms";
           rainContainer.appendChild(drop);
 
@@ -405,12 +406,13 @@
           }, dropDuration + 1000);
         }, rainDuration);
       }
-    
+
       const kanashimiSe = new Audio("sounds/kanasimi_asioto.mp3");
       kanashimiSe.preload = "auto";
       // 喜びシーン用の効果音
       const sambaSe = new Audio("sounds/Samba Janeiro Full.mp3");
       sambaSe.preload = "auto";
+      sambaSe.volume = 0.3;
       // モーダル表示中は効果音を抑制するフラグ
       let suppressKanashimiSe = false;
 
@@ -444,7 +446,7 @@
         const sadSpeechBubble = document.createElement("div");
         sadSpeechBubble.className = "sad-speech-bubble";
         sadSpeechBubble.textContent = "かなしいです…";
-        sadSpeechBubble.style.display = "none";  // 初期状態では非表示
+        sadSpeechBubble.style.display = "none"; // 初期状態では非表示
         const eventScreen = document.querySelector(".event-screen");
         eventScreen.appendChild(sadSpeechBubble);
 
@@ -475,17 +477,32 @@
           const showMini = () => {
             eventImage.src = "images/kanasimicchin_mini.png";
             eventImage.style.transform = "translate(-50%, -50%) scale(1.25)";
-            if (!suppressKanashimiSe) { try { kanashimiSe.currentTime = 0; kanashimiSe.play(); } catch (e) {} }
+            if (!suppressKanashimiSe) {
+              try {
+                kanashimiSe.currentTime = 0;
+                kanashimiSe.play();
+              } catch (e) {}
+            }
           };
           const showTyu = () => {
             eventImage.src = "images/kanasimicchin_tyu.png";
             eventImage.style.transform = "translate(-50%, -50%) scale(1.55)";
-            if (!suppressKanashimiSe) { try { kanashimiSe.currentTime = 0; kanashimiSe.play(); } catch (e) {} }
+            if (!suppressKanashimiSe) {
+              try {
+                kanashimiSe.currentTime = 0;
+                kanashimiSe.play();
+              } catch (e) {}
+            }
           };
           const showFull = () => {
             eventImage.src = "images/kanasimicchin.png";
             eventImage.style.transform = "translate(-50%, -50%) scale(1.85)";
-            if (!suppressKanashimiSe) { try { kanashimiSe.currentTime = 0; kanashimiSe.play(); } catch (e) {} }
+            if (!suppressKanashimiSe) {
+              try {
+                kanashimiSe.currentTime = 0;
+                kanashimiSe.play();
+              } catch (e) {}
+            }
 
             // kanasimicchin.png表示後に吹き出しを表示してクリックで戻るようにする
             setTimeout(() => {
