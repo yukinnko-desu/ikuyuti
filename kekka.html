@@ -45,10 +45,15 @@
           totalTaps.textContent = savedCount ? savedCount : "0";
         }
 
-        const speedValue = savedSpeed ? parseFloat(savedSpeed) : 0;
+        // 保存された連打速度が正しい数値か確認する
+        const parsedSpeed = Number(savedSpeed);
+        const speedValue =
+          Number.isFinite(parsedSpeed) && parsedSpeed >= 0
+            ? parsedSpeed
+            : 0;
 
         if (tapSpeed) {
-          tapSpeed.textContent = savedSpeed ? savedSpeed : "0.00";
+          tapSpeed.textContent = speedValue.toFixed(2);
         }
 
         if (personality) {
