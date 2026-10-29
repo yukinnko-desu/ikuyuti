@@ -64,31 +64,32 @@ document.addEventListener("DOMContentLoaded", () => {
         paragraph.textContent = currentLine;
         paragraph.style.marginBottom = "28px";
         storyText.appendChild(paragraph);
+
         if (heheSound && currentLine.includes("へへ")) {
           heheSound.currentTime = 0;
           heheSound.play().catch((error) => {
             console.log("音声の再生に失敗:", error);
           });
         }
-        // 非 rasuto モードで、2 番目のストーリー（空から落ちてくる）の時に SE を再生
+
+        // 非 rasuto モードで、2 番目のストーリーの時に SE を再生
         if (explosionSound && !isRasuto && currentStoryIndex === 1) {
           explosionSound.currentTime = 0;
           explosionSound.play().catch((error) => {
             console.log("SE の再生に失敗:", error);
           });
         }
+
         currentStoryIndex++;
 
         if (isRasuto && currentStoryIndex === storyLines.length) {
           nextButton.textContent = "タイトルへ戻る";
         }
       } else {
-        // すべてのストーリーが終わった場合
         window.location.href = "title.html";
       }
     });
 
-    // 初期表示はなし
     currentStoryIndex = 0;
   }
 
@@ -136,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const boxSound = isMain || isUramain ? new Audio("sounds/box.mp3") : null;
   const heheClickSound =
     isMain || isUramain ? new Audio("sounds/hehe_T01.wav") : null;
+
   if (heheClickSound) {
     heheClickSound.volume = 1.0;
   }
@@ -162,24 +164,53 @@ document.addEventListener("DOMContentLoaded", () => {
   // event.htmlから戻ってきた場合の処理
   if (isMain) {
     const tapCountBackup = localStorage.getItem("yuttinTapCountBackup");
-    if (tapCountBackup) {
-      tapCount = parseInt(tapCountBackup, 10);
+
+    if (tapCountBackup !== null) {
+      // 保存されたタップ回数が正しい整数か確認
+      const savedCount = Number(tapCountBackup);
+      tapCount =
+        Number.isSafeInteger(savedCount) && savedCount >= 0
+          ? savedCount
+          : 0;
+
       localStorage.removeItem("yuttinTapCountBackup");
+
       if (tapCountDisplay) {
         tapCountDisplay.textContent = String(tapCount);
       }
 
       // firstTapAtの復元
       const firstTapAtBackup = localStorage.getItem("yuttinFirstTapAtBackup");
-      if (firstTapAtBackup) {
-        firstTapAt = parseInt(firstTapAtBackup, 10);
+
+      if (firstTapAtBackup !== null) {
+        const savedTime = Number(firstTapAtBackup);
+        const now = Date.now();
+
+        firstTapAt =
+          Number.isSafeInteger(savedTime) &&
+          savedTime > 0 &&
+          savedTime <= now
+            ? savedTime
+            : null;
+
         localStorage.removeItem("yuttinFirstTapAtBackup");
 
         // event.html中に経過した時間を計測から除外
         const eventEnterTime = localStorage.getItem("yuttinEventEnterTime");
-        if (eventEnterTime) {
-          const eventDuration = Date.now() - parseInt(eventEnterTime, 10);
-          firstTapAt += eventDuration; // event.html中の時間を計測から除外（加算で後ろにシフト）
+
+        if (eventEnterTime !== null) {
+          const savedEventTime = Number(eventEnterTime);
+
+          if (
+            firstTapAt !== null &&
+            Number.isSafeInteger(savedEventTime) &&
+            savedEventTime >= firstTapAt &&
+            savedEventTime <= now
+          ) {
+            const eventDuration = now - savedEventTime;
+            firstTapAt += eventDuration;
+          }
+
           localStorage.removeItem("yuttinEventEnterTime");
         }
       }
@@ -217,10 +248,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (exitSequenceTimeout) {
       clearTimeout(exitSequenceTimeout);
     }
+
     exitSequenceTimeout = setTimeout(() => {
       closeExitResultModal();
+
       if (exitSecondModal) {
         exitSecondModal.removeAttribute("hidden");
+
         if (boxSound) {
           boxSound.currentTime = 0;
           boxSound.play().catch((error) => {
@@ -235,13 +269,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const startExitSequence = () => {
     persistResult();
+
     if (exitResultModal) {
       exitResultModal.removeAttribute("hidden");
       scheduleExitSecondModal();
       return;
     }
+
     if (exitSecondModal) {
       exitSecondModal.removeAttribute("hidden");
+
       if (boxSound) {
         boxSound.currentTime = 0;
         boxSound.play().catch((error) => {
@@ -250,6 +287,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       return;
     }
+
     window.location.href = "kekka.html";
   };
 
@@ -268,11 +306,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!evolutionScreen || evolutionScreenShown) {
         return;
       }
+
       evolutionScreenShown = true;
+
       if (gameScreen) {
         gameScreen.classList.remove("active");
       }
+
       evolutionScreen.classList.add("active");
+
       if (evolutionTapCount) {
         evolutionTapCount.textContent = String(tapCount);
       }
@@ -311,22 +353,27 @@ document.addEventListener("DOMContentLoaded", () => {
       if (evolutionScreenShown) {
         return;
       }
+
       // uramainで100回に達している場合はクリックを無効化
       if (isUramain && tapCount >= 100) {
         return;
       }
+
       if (heheClickSound && isHeheEnabled) {
         heheClickSound.currentTime = 0;
         heheClickSound.play().catch((error) => {
           console.log("音声の再生に失敗:", error);
         });
       }
+
       // カウントを増加
       tapCount++;
+
       // main.htmlでのみ速度計測のためfirstTapAtを記録
       if (isMain && !firstTapAt) {
         firstTapAt = Date.now();
       }
+
       if (tapCountDisplay) {
         tapCountDisplay.textContent = tapCount;
       }
@@ -335,25 +382,29 @@ document.addEventListener("DOMContentLoaded", () => {
       if (isMain && (tapCount === 50 || tapCount === 150)) {
         localStorage.setItem("yuttinEventTapCount", String(tapCount));
         localStorage.setItem("yuttinTapCountBackup", String(tapCount));
+
         if (firstTapAt) {
           localStorage.setItem("yuttinFirstTapAtBackup", String(firstTapAt));
-          // event.htmlに入った時刻を記録
           localStorage.setItem("yuttinEventEnterTime", String(Date.now()));
         }
+
         window.location.href = "event.html";
         return;
       }
 
       if (isUramain && tapCount === 100 && !evolutionShown) {
         evolutionShown = true;
+
         if (dialogueText && dialogueBox) {
           dialogueText.textContent = "ゆっちんが急に震えだした";
+
           if (boxSound) {
             boxSound.currentTime = 0;
             boxSound.play().catch((error) => {
               console.log("音声の再生に失敗:", error);
             });
           }
+
           dialogueBox.classList.add("dialogue-box--event");
           dialogueBox.classList.add("show");
 
@@ -364,6 +415,7 @@ document.addEventListener("DOMContentLoaded", () => {
           dialogueTimeout = setTimeout(() => {
             dialogueText.textContent = "ゆっちんが進化した！！";
             dialogueBox.classList.add("show");
+
             dialogueTimeout = setTimeout(() => {
               dialogueBox.classList.remove("show");
               dialogueBox.classList.remove("dialogue-box--event");
@@ -374,18 +426,20 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 200回に達したら、より派手で面白い爆発エフェクトを出す
+      // 200回に達したら爆発エフェクトを出す
       if (tapCount === 200) {
         yearsImage.style.pointerEvents = "none";
 
-        // 音声を用意（短い爆発 + 余韻の重ね）
+        // 音声を用意
         let explosionShort, explosionBoom;
+
         try {
           explosionShort = new Audio("sounds/Explosion03-2(Short).mp3");
           explosionShort.volume = 1.0;
         } catch (e) {
           console.log("短い爆発SEが読み込めません:", e);
         }
+
         try {
           explosionBoom = new Audio("sounds/Explosion_Boom_Long.mp3");
           explosionBoom.volume = 0.9;
@@ -393,7 +447,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // ファイルが無ければ無視
         }
 
-        // スタイル（粒子・煙・デブリ・フラッシュ・爆風）を追加
+        // スタイルを追加
         const efStyle = document.createElement("style");
         efStyle.textContent = `
           @keyframes particleFly { 0% { transform: translateY(0) scale(1); opacity:1 } 100% { transform: translateY(-260px) translateX(var(--tx,0)) scale(0.5); opacity:0 } }
@@ -411,6 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
           .expl-smoke{ position:absolute; bottom:40%; left:50%; width:360px; height:200px; border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(200,200,200,0.95), rgba(160,160,160,0.7) 30%, rgba(120,120,120,0.5) 60%, rgba(0,0,0,0) 100%); filter: blur(14px); opacity:0.6; transform:translateX(-50%); }
           .body-shake{ animation: screenShake 700ms ease-in-out; }
         `;
+
         document.head.appendChild(efStyle);
 
         // ルート
@@ -460,6 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
             explosionShort.play().catch(() => {});
           } catch (e) {}
         }
+
         if (explosionBoom) {
           setTimeout(() => {
             try {
@@ -469,16 +525,17 @@ document.addEventListener("DOMContentLoaded", () => {
           }, 120);
         }
 
-        // エフェクト完了後にテキスト表示（少し長めにして派手さを見せる）
+        // エフェクト完了後にテキスト表示
         setTimeout(() => {
           // クリーンアップ
           if (root && root.parentNode) root.parentNode.removeChild(root);
           if (flash && flash.parentNode) flash.parentNode.removeChild(flash);
           if (efStyle && efStyle.parentNode)
             efStyle.parentNode.removeChild(efStyle);
+
           document.body.classList.remove("body-shake");
 
-          // モーダル表示（exit-modalの構造を再利用して完全に揃える）
+          // モーダル表示
           const explosionOverlay = document.createElement("div");
           explosionOverlay.className = "exit-modal";
           explosionOverlay.style.position = "fixed";
@@ -500,9 +557,11 @@ document.addEventListener("DOMContentLoaded", () => {
           setTimeout(() => {
             explosionText.textContent =
               "見てください。ゆっちんが照れて爆発しました。";
+
             setTimeout(() => {
               if (explosionOverlay && explosionOverlay.parentNode)
                 explosionOverlay.parentNode.removeChild(explosionOverlay);
+
               startExitSequence();
             }, 2000);
           }, 3000);
@@ -515,6 +574,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (dialogueText && dialogueBox) {
         const randomDialogue =
           dialogues[Math.floor(Math.random() * dialogues.length)];
+
         dialogueText.textContent = randomDialogue;
         dialogueBox.classList.remove("dialogue-box--event");
         dialogueBox.classList.add("show");
@@ -550,15 +610,19 @@ document.addEventListener("DOMContentLoaded", () => {
     exitModal.querySelectorAll("[data-exit]").forEach((button) => {
       button.addEventListener("click", () => {
         const action = button.getAttribute("data-exit");
+
         if (action === "yes") {
           closeExitModal();
+
           if (window.location.pathname.endsWith("uramain.html")) {
             window.location.href = "title.html";
             return;
           }
+
           startExitSequence();
           return;
         }
+
         closeExitModal();
       });
     });
@@ -568,9 +632,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (exitSequenceTimeout) {
           clearTimeout(exitSequenceTimeout);
         }
+
         closeExitResultModal();
+
         if (exitSecondModal) {
           exitSecondModal.removeAttribute("hidden");
+
           if (boxSound) {
             boxSound.currentTime = 0;
             boxSound.play().catch((error) => {
@@ -588,6 +655,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (exitSecondTimeout) {
           clearTimeout(exitSecondTimeout);
         }
+
         exitSecondTimeout = setTimeout(() => {
           closeExitSecondModal();
           window.location.href = "kekka.html";
@@ -599,6 +667,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (exitSecondTimeout) {
             clearTimeout(exitSecondTimeout);
           }
+
           closeExitSecondModal();
           window.location.href = "kekka.html";
         }
@@ -622,6 +691,7 @@ document.addEventListener("DOMContentLoaded", () => {
           scheduleExitSecondRedirect();
         }
       });
+
       observer.observe(exitSecondModal, {
         attributes: true,
         attributeFilter: ["hidden"],
